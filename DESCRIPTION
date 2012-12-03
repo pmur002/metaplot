@@ -1,0 +1,13 @@
+Package: metaplot
+Type: Package
+Title: Meta-analysis Forest Plots
+Version: 1.0                        
+Date: 2012-06-18
+Author: Paul Murrell, David Scott, and Edna Lu 
+Maintainer: Edna Lu <elu005@aucklanduni.ac.nz>
+Description: Draws flexible forest plots. Provides methods for meta-analysis 
+             objects from 'rmeta', 'meta', and 'metafor'.
+Depends: grid
+Suggests: rmeta, meta, metafor
+License: GPL-2
+Repository: CRAN

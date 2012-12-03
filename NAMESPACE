@@ -1,0 +1,48 @@
+#############Exports#############
+## core functions
+export(meta2DF)
+export(meta2DF.metabin)
+export(meta2DF.metacont)
+export(metaDF2Matrix)
+export(metaDF2Matrix.metabinDF)
+export(metaDF2Matrix.metacontDF)
+export(drawMeta)
+export(drawMeta.metabinM)
+export(drawMeta.metacontM)
+
+## make column descriptions                                                           
+export(makeColDesc)
+export(makeCIDesc)
+export(makeMSDDesc)
+
+## specify graphical parameters
+export(metaPar)
+export(metaParDefaults)
+export(resetDefaults)
+
+## print
+export(print.metabinDF)
+export(print.metaPar)
+
+## make hetero stats descriptions
+export(makeStatDesc)
+export(makeLabelDesc)
+
+## convenience functions
+export(metaPlot)
+export(metaPlot.default)
+export(metaPlot.metaDF)
+export(metaPlot.metaM)
+
+## add summary rows
+## export(addSummary)
+
+###########S3methods#############
+S3method(meta2DF, metabin)
+S3method(meta2DF, metacont)
+S3method(metaDF2Matrix, metabinDF)
+S3method(metaDF2Matrix, metabinDF)
+S3method(drawMeta, metabinM)
+S3method(drawMeta, metacontM)
+S3method(print, metabinDF)
+S3method(print, metaPar)                                                                                                                   
