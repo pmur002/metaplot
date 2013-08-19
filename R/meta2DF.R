@@ -1,15 +1,17 @@
-meta2DF <-
-function(meta, ...) {
-   UseMethod("meta2DF")
+
+# Convert arbitrary meta-analysis result into a
+# standardised set of information (for plotting)
+meta2DF <- function(meta, ...) {
+    UseMethod("meta2DF")
 }
+
 ##=====================metabin======================##
-meta2DF.metabin <-
-function(meta,
-         add=NULL, rowOrder=NULL, 
-         title=NULL, subtitle=NULL, ...) {
-   ## get summary data 
+meta2DF.metabin <- function(meta,
+                            add=NULL, rowOrder=NULL, 
+                            title=NULL, subtitle=NULL, ...) {
+    ## get summary data 
     sum.meta <- summary(meta)                            
-   ## generate data columns    
+    ## generate data columns    
     study <- meta$studlab
     n.e <-  meta$n.e
     event.e <-  meta$event.e
