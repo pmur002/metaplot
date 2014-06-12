@@ -12,7 +12,7 @@ used for plotting.
               newCols = list(ci = makeCIDesc("lower", "upper", 2, c("[", "]")), 
               msd.e = makeMSDDesc("mean.e", "sd.e", c(1, 2), c(" (", ")")), 
               msd.c = makeMSDDesc("mean.c", "sd.c", c(1, 2), c(" (", ")"))), 
-              order = colnames(DF),
+              order = c("study", "effect"),
               roundCols = c("effect" = 2, "w.fixed" = 1, "w.random" = 1), 
               colNames = NULL, groupLab = NULL, 
               hgap = c(2, NROW(DF) + 1), 
@@ -23,8 +23,8 @@ used for plotting.
   \item{newCols}{A list of new columns made from existing columns in the data
                  frame. Can use functions \code{\link{makeCIDesc}} and 
                  \code{\link{makeMSDDesc}} to combine and round columns.}
-  \item{order}{A vector of column names in the order that it should appear in the
-               matrix.}
+  \item{order}{A vector of column names in the order that it should
+    appear in the matrix.}
   \item{roundCols}{A named vector with values of rounding to the nearest decimal
                    place of specified column names.}
   \item{colNames}{A vector of column names for the ordered matrix.}

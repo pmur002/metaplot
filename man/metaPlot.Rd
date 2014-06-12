@@ -1,6 +1,6 @@
 \name{metaPlot}
 \alias{metaPlot}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 Forest Plot Function 
 }
@@ -32,11 +32,11 @@ drawMeta(Matrix)}
 \value{
 None 
 }
-\seealso{
-\code{\link{metaPlot.default}}
-\code{\link{metaPlot.metaDF}}
-\code{\link{metaPlot.metaM}}
-}
+%% \seealso{
+%% \code{\link{metaPlot.default}}
+%% \code{\link{metaPlot.metaDF}}
+%% \code{\link{metaPlot.metaM}}
+%% }
 \examples{
 library(meta)
 data(Olkin95)
