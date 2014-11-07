@@ -7,7 +7,8 @@ Author: Paul Murrell, David Scott, and Edna Lu
 Maintainer: Edna Lu <elu005@aucklanduni.ac.nz>
 Description: Draws flexible forest plots. Provides methods for meta-analysis 
              objects from 'rmeta', 'meta', and 'metafor'.
-Depends: grid
-Suggests: rmeta, meta, metafor
+Depends: R (>= 3.0.0), grid
+Suggests: rmeta, meta, metafor, knitr
+VignetteBuilder: knitr
 License: GPL-2
 Repository: CRAN
