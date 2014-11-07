@@ -1,0 +1,115 @@
+\documentclass[article, nojss]{jss}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{afterpage}
+
+\newtheorem{exmp}{Example}[section]
+\newtheorem{rexample}{R Example}[section]
+% !Rnw weave = knitr
+% \VignetteIndexEntry{The glarma package}
+% \VignetteEngine{knitr::knitr}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% almost as usual
+\author{Paul Murrell\\
+  University of Auckland
+  \And
+  David J. Scott\\
+  University of Auckland
+}
+
+\title{The \pkg{metaplot} Gallery}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Paul Murrel, David Scott} %% comma-separated
+
+\Plaintitle{The metaplot Gallery} %% without formatting
+
+\Shorttitle{The \pkg{metaplot} Gallery} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{ 
+  This gallery exhibits the capabilities of the
+  \pkg{metaplot} package and also serves as a test routine for the
+  package.  
+}
+
+\Keywords{ 
+  meta-analysis, forest plots, \pkg{metaplot}, \pkg{rmeta},
+  \pkg{meta}, \pkg{metafor}, \proglang{R}
+}
+
+\Plainkeywords{
+  meta-analysis, forest plots, metaplot, rmeta,
+  meta, metafor, R\
+}
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{2012-06-04}
+%% \Acceptdate{2012-06-04}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  David J Scott\\
+  Department of Statistics \\
+  The University of Auckland\\
+  PB 92019\\
+  Auckland 1142\\
+  New Zealand\\
+  E-mail: \email{d.scott@auckland.ac.nz}\\
+  URL: \url{http://statistics.auckland.ac.nz/~dscott}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/512/507-7103
+%% Fax: +43/512/507-2851
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+<<setup, include=FALSE>>=
+library(knitr)
+opts_chunk$set(comment = NA, fig.path='Figures/metaplot',
+               fig.align = 'center', fig.show = 'hold')
+options(replace.assign = TRUE, width = 60)
+knit_hooks$set(rexample = function(before, options, envir) {
+    if (before) {
+        sprintf('\\begin{rexample}\\label{%s}\\hfill{}', options$label)
+    } else {
+        '\\end{rexample}'
+    }
+}
+)
+@
+
+<<echo=FALSE, warning = FALSE>>=
+library(rmeta)
+library(metaplot)
+@
+
+\section{Introduction}
+\label{sec:Intro}
+
+This document gives examples of the use of the package \pkg{metaplot}
+to produce forest plots using output from the \pkg{rmeta}.
+
+It also serves as a regression test for the package. Because the
+output from \pkg{metaplot} is graphical, the usual test procedures for
+
+
+\end{document}
