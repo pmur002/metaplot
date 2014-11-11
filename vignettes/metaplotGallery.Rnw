@@ -97,19 +97,55 @@ knit_hooks$set(rexample = function(before, options, envir) {
 )
 @
 
-<<echo=FALSE, warning = FALSE>>=
-library(rmeta)
-library(metaplot)
-@
 
 \section{Introduction}
 \label{sec:Intro}
 
 This document gives examples of the use of the package \pkg{metaplot}
-to produce forest plots using output from the \pkg{rmeta}.
+to produce forest plots using output from meta-analysis packages
+available on CRAN.
 
 It also serves as a regression test for the package. Because the
 output from \pkg{metaplot} is graphical, the usual test procedures for
+evaluating numerical output are not appropriate.
+
+The \pkg{metaplot} package was first developed to draw forest plots
+using meta-analysis results from the \pkg{meta} package, so in many
+cases the examples use data from that package.
+
+\section[drawMeta()]{The \code{drawMeta()} function}
+\label{sec:drawmeta}
+
+The basic function to draw forest plots is the \code{drawMeta()} function. 
+
+We first initialize, then perform a meta-analysis using the \pkg{meta}
+package. The functions \code{meta2DF()} and \code{metaDF2Matrix}
+convert the output from \code{metabin()} to a data frame, and from a
+data frame to a matrix respectively.
+
+<<metabin1>>=
+library(meta)
+library(metaplot)
+binary <- metabin(c(12, 16), c(16, 20), c(3, 9), c(15, 19),
+                  studlab = c("Richstein 1980", "Lechler 1986"))
+df <- meta2DF(binary)
+matrix2 <- metaDF2Matrix(df, stat = NULL)
+@
+
+Then the forest plot shown in Figure~\ref{fig:drawMeta1} is produced
+using the basic \code{drawMeta()} function:
+<<drawMeta1, fig.width=7, fig.height=2, out.width = '\\linewidth', fig.cap = "Basic forest plot from \\code{drawMeta()}">>=
+drawMeta(matrix2)
+@
+
+It is easy to change the location of the columns relative to the plot
+using an argument to \code{drawMeta()} with the result shown in
+Figure~\ref{fig:drawMeta2}.
+
+<<drawMeta2, fig.width=7, fig.height=2, out.width = '\\linewidth', fig.cap = "Basic forest plot from \\code{drawMeta()}">>=
+drawMeta(matrix2, plotCol = 2)
+@
+
 
 
 \end{document}
