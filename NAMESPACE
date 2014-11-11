@@ -7,10 +7,11 @@ export(metaDF2Matrix)
 export(metaDF2Matrix.metabinDF)
 export(metaDF2Matrix.metacontDF)
 export(drawMeta)
+export(drawMetaBasic)
 export(drawMeta.metabinM)
 export(drawMeta.metacontM)
 
-## make column descriptions                                                           
+## make column descriptions 
 export(makeColDesc)
 export(makeCIDesc)
 export(makeMSDDesc)
@@ -45,4 +46,4 @@ S3method(metaDF2Matrix, metabinDF)
 S3method(drawMeta, metabinM)
 S3method(drawMeta, metacontM)
 S3method(print, metabinDF)
-S3method(print, metaPar)                                                                                                                   
+S3method(print, metaPar)

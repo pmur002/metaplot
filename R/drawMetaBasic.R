@@ -52,7 +52,7 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
                             plotCol, plotWidth)
   rowHeights <- scale*rowHeights
   ## push viewports
-  pushViewport(viewport(layout = grid.layout(nr + 1,nc*2 + 2,
+  pushViewport(viewport(layout = grid.layout(nr + 1, nc*2 + 2,
                          widths = colWidth,
                          heights = rowHeights), name = vpName))
   cwidth <- (upper - lower)
@@ -90,7 +90,7 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
   ## draw no effect line
   grid.lines(name = "refLine",
              x = unit(refLine,"native"),
-             y = unit(c(0, (nr-2)*lineScale), "lines"),
+             y = unit(c(0, (nr - 2)*lineScale), "lines"),
              gp = do.call("gpar", plotPar$refLine))
   # draw overall effects line
   for (i in 1:nr) {
@@ -114,10 +114,10 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
          ticks <- xticks
      }
      if (length(ticks)){
-         if (min(lower,na.rm = TRUE) < clip[1]) {
+         if (min(lower, na.rm = TRUE) < clip[1]) {
            ticks <- c(exp(clip[1]), ticks)
          }
-         if (max(upper,na.rm = TRUE) > clip[2]){
+         if (max(upper, na.rm = TRUE) > clip[2]){
            ticks <- c(ticks,exp(clip[2]))
          }
          xax <- xaxisGrob(gp = do.call("gpar", plotPar$axis),
