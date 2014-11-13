@@ -33,13 +33,13 @@
 \Shorttitle{The \pkg{metaplot} Gallery} %% a short title (if necessary)
 
 %% an abstract and keywords
-\Abstract{ 
+\Abstract{
   This gallery exhibits the capabilities of the
   \pkg{metaplot} package and also serves as a test routine for the
-  package.  
+  package.
 }
 
-\Keywords{ 
+\Keywords{
   meta-analysis, forest plots, \pkg{metaplot}, \pkg{rmeta},
   \pkg{meta}, \pkg{metafor}, \proglang{R}
 }
@@ -113,15 +113,25 @@ The \pkg{metaplot} package was first developed to draw forest plots
 using meta-analysis results from the \pkg{meta} package, so in many
 cases the examples use data from that package.
 
+
 \section[drawMeta()]{The \code{drawMeta()} function}
 \label{sec:drawmeta}
 
-The basic function to draw forest plots is the \code{drawMeta()} function. 
+The basic function to draw forest plots is the \code{drawMeta()}
+function, which is generic. We start with a simple example of the use
+of this function, using output from the function \code{metabin()} from
+the package \pkg{meta}.
+
+Analysis of binary outcome data by the package \pkg{meta} produces an
+object of class \code{c('metabin', 'meta')}.
 
 We first initialize, then perform a meta-analysis using the \pkg{meta}
-package. The functions \code{meta2DF()} and \code{metaDF2Matrix}
+package. The generic functions \code{meta2DF()} and \code{metaDF2Matrix}
 convert the output from \code{metabin()} to a data frame, and from a
-data frame to a matrix respectively.
+data frame to a matrix respectively. The actual functions carrying out
+these transformations are \code{meta2DF.metabin()} and
+\code{metaDF2Matrix.metabinDF()}, which respectively produce objects of
+class \code{'metabinDF'} and \code{'metabinM'}.
 
 <<metabin1>>=
 library(meta)
@@ -129,22 +139,78 @@ library(metaplot)
 binary <- metabin(c(12, 16), c(16, 20), c(3, 9), c(15, 19),
                   studlab = c("Richstein 1980", "Lechler 1986"))
 df <- meta2DF(binary)
-matrix2 <- metaDF2Matrix(df, stat = NULL)
+matrix <- metaDF2Matrix(df, stat = NULL)
 @
 
 Then the forest plot shown in Figure~\ref{fig:drawMeta1} is produced
 using the basic \code{drawMeta()} function:
 <<drawMeta1, fig.width=7, fig.height=2, out.width = '\\linewidth', fig.cap = "Basic forest plot from \\code{drawMeta()}">>=
-drawMeta(matrix2)
+drawMeta(matrix)
 @
+
+Since \code{drawMeta()} is generic, the function which produces the
+plot is actually \code{drawMeta.metabinM}.
 
 It is easy to change the location of the columns relative to the plot
 using an argument to \code{drawMeta()} with the result shown in
 Figure~\ref{fig:drawMeta2}.
 
 <<drawMeta2, fig.width=7, fig.height=2, out.width = '\\linewidth', fig.cap = "Basic forest plot from \\code{drawMeta()}">>=
-drawMeta(matrix2, plotCol = 2)
+drawMeta(matrix, plotCol = 2)
 @
+
+For continous outcome data, the \code{metacont()} function from the
+\code{'meta'} package produces an object of class \code{c('metacont',
+  'meta')}. This object is converted to a data frame then a matrix
+after which it can be plotted by a call to the generic
+\code{drawMeta}. Here is an example of this procedure when the data
+comprises a single group only. First the data is retrieved and
+transformed.
+
+<<metabin2>>=
+data(Fleiss93cont)
+meta1 <- metacont(n.e, mean.e, sd.e, n.c, mean.c,
+                  sd.c, data = Fleiss93cont, sm = "SMD")
+Data <- meta2DF(meta1)
+
+matrix <- metaDF2Matrix(Data,
+                        order = c("study", "effect"),
+                        roundCols = c("effect" = 2),
+                        hgap = 2)
+@
+
+Then the plot can be drawn.
+
+<<drawMeta3, fig.width=7, fig.height=2, out.width = '\\linewidth', fig.cap = "Forest plot from \\code{drawMeta()} with continuous outcome data">>=
+drawMeta(matrix,
+         plotCol = 3,
+         plotHead = "Weighted Mean Difference")
+@
+
+It is also possible to produce a forest plot of data where there are groups
+
+<<metabin3>>=
+meta <- metacont(n.e, mean.e, sd.e, n.c, mean.c, sd.c,
+                 data = Fleiss93cont, sm = "SMD",
+                 byvar = c(1,2,1,1,2), bylab = "group")
+Data <- meta2DF(meta, title = "Mental Health Treatment",
+                rowOrder = "effect", decreasing = TRUE)
+matrix <- metaDF2Matrix(Data,
+                        groupLab = c("Group One", "Group Two", "Overall"),
+                        order = c("study", "msd.e", "msd.c", "effect",
+                                  "ci", "w.fixed", "w.random"),
+                        roundCols = c("effect" = 2, "w.fixed" = 1,
+                                      "w.random" = 1),
+                        hgap=c(2,11,18), vgap = 5)
+@
+
+<<drawMeta4, fig.width=9, fig.height=4.5, out.width = '\\linewidth', fig.cap = "Forest plot from \\code{drawMeta()} with grouped continuous outcome data">>=
+drawMeta(matrix,
+         plotCol = 6,
+         plotHead = "Weighted Mean Difference")
+@
+
+\clearpage
 
 
 

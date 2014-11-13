@@ -35,12 +35,11 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
   ## see if any row has NA
   rowWidth <- !apply(is.na(labeltext), 1, any)
   ## start new page
-  if (newpage)
-     grid.newpage()
+  if (newpage) grid.newpage()
   ## work out plot scale
   if (fit) {
-  scale <- fitPlot(labeltext, align, is.summary, plotPar,
-                    plotWidth, plotCol, rowWidth, rowHeights)
+    scale <- fitPlot(labeltext, align, is.summary, plotPar,
+                     plotWidth, plotCol, rowWidth, rowHeights)
   } else {
     scale <- 1
   }
@@ -53,15 +52,18 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
   rowHeights <- scale*rowHeights
   ## push viewports
   pushViewport(viewport(layout = grid.layout(nr + 1, nc*2 + 2,
-                         widths = colWidth,
-                         heights = rowHeights), name = vpName))
+                                             widths = colWidth,
+                                             heights = rowHeights),
+                        name = vpName))
   cwidth <- (upper - lower)
-  xrange <- c(max(min(lower, na.rm = TRUE),clip[1]),
-           min(max(upper, na.rm = TRUE),clip[2]))
+  xrange <- c(max(min(lower, na.rm = TRUE), clip[1]),
+              min(max(upper, na.rm = TRUE), clip[2]))
   info <- 1/cwidth
   info <- info/max(info[!is.summary], na.rm = TRUE)
   info[is.summary] <- 1
-  if (!is.null(boxSize)) info <- rep(boxSize, length = length(info))
+  if (!is.null(boxSize)) {
+    info <- rep(boxSize, length = length(info))
+  }
   ## push viewports with layout to draw texts
   for(j in 1:nc){
     for(i in 1:nr){
@@ -92,7 +94,7 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
              x = unit(refLine,"native"),
              y = unit(c(0, (nr - 2)*lineScale), "lines"),
              gp = do.call("gpar", plotPar$refLine))
-  # draw overall effects line
+  ## draw overall effects line
   for (i in 1:nr) {
     if (is.summary[i]){
       grid.lines(name= paste("summaryLine", studynames[i], sep = "."),
@@ -103,40 +105,39 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
   }
   ## draw x-axis
   if (xlog){
-     if(is.null(xticks)){
-         ticks <- pretty(exp(xrange))
-         if (clip[1] == -Inf) {
-         ## add 0.5 and 1 to axis label
-           ticks <- unique(sort(c(0.5, 1, ticks)))
-         }
-         ticks <- ticks[ticks>0]
-     } else {
-         ticks <- xticks
-     }
-     if (length(ticks)){
-         if (min(lower, na.rm = TRUE) < clip[1]) {
-           ticks <- c(exp(clip[1]), ticks)
-         }
-         if (max(upper, na.rm = TRUE) > clip[2]){
-           ticks <- c(ticks,exp(clip[2]))
-         }
-         xax <- xaxisGrob(gp = do.call("gpar", plotPar$axis),
-                          at = log(ticks), name = "xax")
-         xax1 <- editGrob(xax, gPath("labels"),
-                          ## sprintf get rid of trailing zeros in label
-                          label = sprintf("%g",
-                                  as.numeric(format(ticks, digits = 2))))
-
+    if(is.null(xticks)){
+      ticks <- pretty(exp(xrange))
+      if (clip[1] == -Inf) {
+        ## add 0.5 and 1 to axis label
+        ticks <- unique(sort(c(0.5, 1, ticks)))
+      }
+      ticks <- ticks[ticks > 0]
+    } else {
+      ticks <- xticks
+    }
+    if (length(ticks)){
+      if (min(lower, na.rm = TRUE) < clip[1]) {
+        ticks <- c(exp(clip[1]), ticks)
+      }
+      if (max(upper, na.rm = TRUE) > clip[2]){
+        ticks <- c(ticks, exp(clip[2]))
+      }
+      xax <- xaxisGrob(gp = do.call("gpar", plotPar$axis),
+                       at = log(ticks), name = "xax")
+      xax1 <- editGrob(xax, gPath("labels"),
+                       ## sprintf get rid of trailing zeros in label
+                       label = sprintf("%g",
+                                       as.numeric(format(ticks, digits = 2))))
          grid.draw(xax1)
      }
   } else {
-      if (is.null(xticks)){
-         grid.xaxis(name = "xax",
-                    gp = do.call("gpar", plotPar$axis))
-      } else if(length(xticks)) {
-         grid.xaxis(name = "xax",at = xticks,
-                    gp = do.call("gpar", plotPar$axis))
-     }
+    if (is.null(xticks)){
+      grid.xaxis(name = "xax",
+                 gp = do.call("gpar", plotPar$axis))
+    } else if(length(xticks)) {
+      grid.xaxis(name = "xax",at = xticks,
+                 gp = do.call("gpar", plotPar$axis))
+    }
   }
   ## draw plot heading
   grid.text(name = "plotHead", plotHead,

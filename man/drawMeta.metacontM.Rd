@@ -42,8 +42,7 @@ Funtion to create forest plots for objects of class \code{'metabcontM'}.
   \item{vpName}{Name of the forest plot viewport.}
   \item{\dots}{Not used.}
 }
-\details{
-  
+\details{  
 This function is more flexible but contains less arguments than the
 \code{forest.meta} method for \code{'metacont'} objects. It requires the
 user to first produce a dataframe using \code{\link{meta2DF.metacont}}
@@ -61,7 +60,9 @@ columns from existing columns in the data frame can be done using
 confidence interval graph relative to the other text columns can be done
 in \code{\link{drawMeta.metacontM}}.
 } 
-\value{ None }
+\value{
+  None
+}
 \seealso{
   \code{\link{meta2DF.metacont}}, \code{\link{metaDF2Matrix.metacontDF}}
 }
