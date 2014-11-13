@@ -11,10 +11,11 @@ metaPar(...)
 }
 \arguments{
   \item{\dots}{Lists of named parameter settings}
-}                              
+}
 \details{
 Valid parameters are listed in \code{\link{gpar}} for each of the named
 arguments.
+
 The named arguments are:
 \tabular{ll}{
 box \tab      List of parameters for the sample size box. \cr
@@ -29,15 +30,14 @@ axis \tab     List of parameters for the x-axis. \cr
 title \tab    List of parameters for the title. \cr
 subtitle \tab List of parameters for the subtitle. \cr
 text \tab     List of parameters for the table texts. \cr
-hetStat \tab  List of parameters for the heterogeneity measures. \cr  
+hetStat \tab  List of parameters for the heterogeneity measures. \cr
 }
 }
 \value{
 A list of graphical parameters.
 }
 \examples{
- metaPar(box=list(fill="royalblue", col="royalblue"),
-                           lines=list(col="darkblue"),
-                           diamond=list(fill="royalblue", col="royalblue")
- )
- }
+metaPar(box = list(fill = "royalblue", col = "royalblue"),
+                   lines = list(col = "darkblue"),
+                   diamond = list(fill = "royalblue", col = "royalblue"))
+}
