@@ -20,12 +20,12 @@ metaPlot(x, ...)
 \details{
 
   This function provides a convenient way to draw forest plots in only
-  one step. It assumes default values for intermediate functions
+  onestep. It assumes default values for intermediate functions
   \code{meta2DF} and \code{metaDF2Matrix} if input is a meta-analysis
   object.
 
-If \code{x} is a meta-analysis object, calling \code{metaPlot(x)} is
-same as doing the following steps:
+  If \code{x} is a meta-analysis object, calling \code{metaPlot(x)} is
+  same as doing the following steps:
 
 \code{
 DF <- meta2DF(x), 

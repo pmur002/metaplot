@@ -1,6 +1,6 @@
 \name{resetDefaults}
 \alias{resetDefaults}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
 Reset Default Settings for metaPar 
 }
@@ -17,10 +17,11 @@ resetDefaults()
 \code{\link{metaPar}}
 }
 \examples{
-metaParDefaults(box = list(fill="steelblue"), hetStat = list(fontface="plain"))        
-## defaults changed
+metaParDefaults(box = list(fill="steelblue"),
+                hetStat = list(fontface="plain"))        
+### defaults changed
 metaPar()
 resetDefaults()
-## back to original defaults
+### back to original defaults
 metaPar()
 }
