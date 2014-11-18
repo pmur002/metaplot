@@ -1,228 +1,724 @@
-### Convert arbitrary meta-analysis result into a
-### standardised set of information (for plotting)
+### set up generic function
 meta2DF <- function(meta, ...) {
-    UseMethod("meta2DF")
+  UseMethod("meta2DF")
 }
 
-###====================metabin=====================###
-meta2DF.metabin <- function(meta,
-                            add = NULL, rowOrder = NULL,
-                            title = NULL, subtitle = NULL, ...) {
-  ## get summary data
-  sum.meta <- summary(meta)
-  ## generate data columns
-  study <- meta$studlab
-  n.e <-  meta$n.e
-  event.e <-  meta$event.e
-  n.c <-  meta$n.c
-  event.c <- meta$event.c
-  effect <- exp(meta$TE)
-  w.fixed <- meta$w.fixed/sum(meta$w.fixed) * 100
-  w.random <- meta$w.random/sum(meta$w.fixed) * 100
-  group <- rep("", length(study))
-  se <- meta$seTE
-  mean <- meta$TE
-  lower <- sum.meta$study$lower
-  upper <- sum.meta$study$upper
-  e.lower <- exp(sum.meta$study$lower)
-  e.upper <- exp(sum.meta$study$upper)
-  summary.fixed <- data.frame(study = "Fixed effect",
-                              n.e = sum(meta$n.e), event.e = "",
-                              n.c = sum(meta$n.c), event.c = "",
-                              effect = exp(meta$TE.fixed),
-                              se = meta$seTE.fixed,
-                              w.fixed = 100, w.random = 0,
-                              mean = meta$TE.fixed,
-                              lower = sum.meta$fixed$lower,
-                              upper = sum.meta$fixed$upper,
-                              e.lower = exp(sum.meta$fixed$lower),
-                              e.upper = exp(sum.meta$fixed$upper),
-                              group = "")
-  summary.random <- data.frame(study = "Random effects",
-                               n.e = "", event.e = "",
-                               n.c = "", event.c = "",
-                               effect = exp(meta$TE.random),
-                               se = meta$seTE.random,
-                               w.fixed = 0, w.random = 100,
-                               mean = meta$TE.random,
-                               lower = sum.meta$random$lower,
-                               upper = sum.meta$random$upper,
-                               e.lower = exp(sum.meta$random$lower),
-                               e.upper = exp(sum.meta$random$upper),
-                               group = "")
+###========================meta=============================###
 
-  ## create data frame
-  DF <- data.frame(study = study,
-                   n.e = n.e, event.e = event.e,
-                   n.c = n.c, event.c = event.c,
-                   effect = effect, se = se,
-                   w.fixed = w.fixed, w.random = w.random,
-                   mean = mean, lower =lower, upper = upper,
-                   e.lower = e.lower, e.upper = e.upper,
-                   group = group)
+###=====metabin=====###
+meta2DF.metabin <- function(meta, add = NULL, rowOrder = NULL,
+                            title = NULL, subtitle = NULL, ...){
+  ## step 1: set up the main data frame
+  ## summary meta data
+  summMeta <- summary(meta)
+  # set up main data frame
+  DF <- forestDF(meta, study = meta$studlab, n.e = meta$n.e,
+                 event.e = meta$event.e, n.c = meta$n.c, se = meta$seTE,
+                 event.c = meta$event.c, effect = exp(meta$TE),
+                 w.fixed = (meta$w.fixed/sum(meta$w.fixed)*100),
+                 w.random = (meta$w.random/sum(meta$w.random)*100),
+                 mean = meta$TE, lower = summMeta$study$lower,
+                 upper = summMeta$study$upper,
+                 e.lower = exp(summMeta$study$lower),
+                 e.upper = exp(summMeta$study$upper),
+                 summary = FALSE)
 
-  ## attach additional columns to data frame
+
+  ## step 2: set up the fixed effect and the random effect
+  ## fixed effect
+  summaryFixed <- forestDF(meta, study = "Fixed effect",
+                           n.e = sum(meta$n.e), event.e = NA,
+                           n.c = sum(meta$n.c), event.c = NA,
+                           effect = exp(meta$TE.fixed),
+                           se = meta$seTE.fixed, w.fixed = 100,
+                           w.random = 0, mean = meta$TE.fixed,
+                           lower = summMeta$fixed$lower,
+                           upper = summMeta$fixed$upper,
+                           e.lower = exp(summMeta$fixed$lower),
+                           e.upper = exp(summMeta$fixed$upper),
+                           summary = TRUE)
+
+  ## random effect
+  summaryRandom <- forestDF(meta, study = "random effect",
+                            n.e = NA, event.e = NA,
+                            n.c = NA, event.c = NA,
+                            effect = exp(meta$TE.random),
+                            se = meta$seTE.random,
+                            w.fixed = 0, w.random = 100,
+                            mean = meta$TE.random,
+                            lower = summMeta$random$lower,
+                            upper = summMeta$random$upper,
+                            e.lower = exp(summMeta$random$lower),
+                            e.upper = exp(summMeta$random$upper),
+                            summary = TRUE)
+
+
+  ## step 3: customize the main data frame
+  ## attach additional columns to the meta object
   if (!is.null(add)) {
+    ## attach the additional column to the main data frame
     DF <- cbind(DF, add)
-    ## adds empty columns to summary data frames
+    ## attach the corresponding space to the summary data frame
     addspace <- lapply(add, function(x){x <- ""})
-    ## is.na(addspace) <- c(1:length(addspace))
-    summary.fixed <- cbind(summary.fixed, addspace)
-    summary.random <- cbind(summary.random, addspace)
+    summaryFixed <- cbind(summaryFixed, addspace)
+    summaryRandom <- cbind(summaryRandom, addspace)
   }
 
-  ## specify row order
-  nr <- NROW(DF)
+  ## specify row orders
   if (!is.null(rowOrder)) {
-    order <- order(DF[, rowOrder], ...)
-    DF <- DF[order, ]
+    Order <- order(DF[, rowOrder], ...)
+    DF <- DF[Order, ]
   }
 
-  ## heterogenity info
-  hetero <- c(Q = sum.meta$Q, df = sum.meta$k - 1,
-              p = pchisq(sum.meta$Q, sum.meta$k - 1, lower.tail = FALSE),
-              tau2 = sum.meta$tau^2,
-              H = sum.meta$H$TE,
-              H.lower = sum.meta$H$lower,
-              H.upper = sum.meta$H$upper,
-              I2 = sum.meta$I2$TE,
-              I2.lower = sum.meta$I2$lower,
-              I2.upper = sum.meta$I2$upper,
-              Q.CMH = sum.meta$Q.CMH)
+  ## step 4: heterogeneity information
+  hetero <- c(Q = summMeta$Q, df = summMeta$k - 1,
+              p = pchisq(summMeta$Q, summMeta$k - 1, lower.tail = FALSE),
+              tau2 = summMeta$tau^2,
+              H = summMeta$H$TE,
+              H.lower = summMeta$H$lower,
+              H.upper = summMeta$H$upper,
+              I2 = summMeta$I2$TE,
+              I2.lower = summMeta$I2$lower,
+              I2.upper = summMeta$I2$upper,
+              Q.CMH = summMeta$Q.CMH)
 
-  ## titles
+
+
+  ## step 5: Grouped Studies
+  if (!is.null(meta$byvar)){
+    Group <- list()
+    gp <- DF["group"]
+    for (i in 1:max(gp)){
+      ## set up of the main DF for the group
+      df <- DF[gp == i, ]
+
+      ## fixed effect for the group
+      groupFixed <- forestDF(meta, study = "Fixed Effect",
+                             n.e = sum(meta$n.e[gp == i]), event.e = NA,
+                             n.c = sum(meta$n.c[gp == i]), event.c = NA,
+                             effect = exp(summMeta$within.fixed$TE[i]),
+                             se = summMeta$within.fixed$seTE[i], w.fixed = 0,
+                             w.random = 0, mean = summMeta$within.fixed$TE[i],
+                             lower = summMeta$within.fixed$lower[i],
+                             upper = summMeta$within.fixed$upper[i],
+                             e.lower = exp(summMeta$within.fixed$lower[i]),
+                             e.upper = exp(summMeta$within.fixed$upper[i]),
+                             summary = TRUE)
+
+      ## random effect for the group
+      groupRandom <- forestDF(meta, study = "Random Effect",
+                              n.e = NA, event.e = NA,
+                              n.c = NA, event.c = NA,
+                              effect = exp(summMeta$within.random$TE[i]),
+                              se = summMeta$within.random$seTE[i],
+                              w.fixed = 0, w.random= 0,
+                              mean = summMeta$within.random$TE[i],
+                              lower = summMeta$within.random$lower[i],
+                              upper = summMeta$within.random$upper[i],
+                              e.lower = exp(summMeta$within.random$lower[i]),
+                              e.upper = exp(summMeta$within.random$upper[i]),
+                              summary = TRUE)
+
+      ## heterogeneity information for the group
+      hetero.w <- c(Q = summMeta$Q.w[i], df = summMeta$k.w[i] - 1,
+                    p = pchisq(summMeta$Q.w[i], summMeta$k.w[i] - 1,
+                               lower.tail = FALSE),
+                    tau2 = summMeta$tau.w[i]^2,
+                    H = summMeta$H.w$TE[i],
+                    H.lower = summMeta$H.w$lower[i],
+                    H.upper = summMeta$H.w$upper[i],
+                    I2 = summMeta$I2.w$TE[i],
+                    I2.lower = summMeta$I2.w$lower[i],
+                    I2.upper = summMeta$I2.w$upper[i])
+
+      ## set up the groups
+      Group[[i]] <- list(DF = df, summaryFixed = groupFixed,
+                         summaryRandom = groupRandom, hetero = hetero.w)
+
+    }
+  }
+
+  ## step 6: set up titles
   title <- title
   subtitle <- subtitle
 
-  ## create list
-  output <- list(DF = DF,
-                 summary.fixed = summary.fixed,
-                 summary.random = summary.random,
-                 hetero = hetero, title = title, subtitle = subtitle)
-
-  class(output) <- c("metabinDF", "metaDF")
+  ## step 7: wrap up
+  if (!is.null(meta$byvar)){
+    output <- list(Group = Group, overallFixed = summaryFixed,
+                  overallRandom = summaryRandom, hetero = hetero,
+                  title = title, subtitle = subtitle)
+    class(output) <- c("groupedMetaDF", "metabinDF", "metaDF")
+  } else{
+    output <- list(DF = DF, summaryFixed = summaryFixed,
+                   summaryRandom = summaryRandom, hetero = hetero,
+                   title = title, subtitle = subtitle)
+    class(output) <- c("metabinDF", "metaDF")
+  }
   output
 }
 
-###====================metacont=====================###
-meta2DF.metacont <- function(meta, add = NULL, rowOrder= NULL,
-                             title = NULL, subtitle = NULL, ...)
-{
-  ##==== create data frame function ====##
-  forestDf <- function(study, n.e, mean.e, sd.e, n.c, mean.c, sd.c, effect,
-                       se, w.fixed, w.random, mean, lower, upper, group) {
-    data.frame(study = study,
-               n.e = n.e, mean.e = mean.e, sd.e = sd.e,
-               n.c = n.c, mean.c = mean.c, sd.c = sd.c,
-               effect = effect, se = se,
-               w.fixed = w.fixed, w.random = w.random,
-               mean = mean, lower = lower, upper = upper,
-               group = group)
-  }
-  ## get summary data
-  sum.meta <- summary(meta)
-  ## create main data frame
-  DF <- forestDf(meta$studlab,
-                 meta$n.e, meta$mean.e, meta$sd.e,
-                 meta$n.c, meta$mean.c, meta$sd.c,
-                 meta$TE, meta$seTE,
-                 meta$w.fixed/sum(meta$w.fixed) * 100,
-                 meta$w.random/sum(meta$w.random) * 100,
-                 meta$TE, sum.meta$study$lower, sum.meta$study$upper,
-                 rep("", length(meta$studlab)))
-  ## create summary rows
-  summary.fixed <- forestDf("Fixed effect",
-                            sum(meta$n.e), NA, NA,
-                            sum(meta$n.c), NA, NA,
-                            meta$TE.fixed, meta$seTE.fixed,
-                            100, 0,
-                            meta$TE.fixed, sum.meta$fixed$lower,
-                            sum.meta$fixed$upper,
-                            "")
-  summary.random <- forestDf("Random effects",
-                             NA, NA, NA,
-                             NA, NA, NA,
-                             meta$TE.random, meta$seTE.random,
-                             0, 100,
-                             meta$TE.random, sum.meta$random$lower,
-                             sum.meta$random$upper,
-                             "")
-  ## attach additional columns to data frame
-  if (!is.null(add)) {
+###=====metacont=====###
+meta2DF.metacont <- function(meta, add = NULL, rowOrder = NULL,
+                             title = NULL, subtitle = NULL, ...){
+  ## step 1: set up the main data frame
+  ## summary meta data
+  summMeta <- summary(meta)
+  ## set up the main data frame
+  DF <- forestDF(meta, study = meta$studlab, n.e = meta$n.e,
+                 mean.e = meta$mean.e, sd.e = meta$sd.e,
+                 n.c = meta$n.c, mean.c = meta$mean.c, sd.c = meta$sd.c,
+                 effect = meta$TE, se = meta$seTE,
+                 w.fixed = meta$w.fixed/sum(meta$w.fixed)*100,
+                 w.random = meta$w.random/sum(meta$w.random)*100,
+                 mean = meta$TE, lower = summMeta$study$lower,
+                 upper = summMeta$study$upper)
+
+  ## step 2: set up the fixed effect and the random effect
+  ## fixed effect
+  summaryFixed <- forestDF(meta, study = "Fixed effect",
+                           n.e = sum(meta$n.e), mean.e = NA, sd.e = NA,
+                           n.c = sum(meta$n.c), mean.c = NA, sd.c = NA,
+                           effect = meta$TE.fixed, se = meta$seTE.fixed,
+                           w.fixed = 100, w.random = 0, mean = meta$TE.fixed,
+                           lower = summMeta$fixed$lower,
+                           upper = summMeta$fixed$upper, summary = TRUE)
+
+  ## random effect
+  summaryRandom <- forestDF(meta, study = "Random effect",
+                            n.e = NA, mean.e = NA, sd.e = NA,
+                            n.c = NA, mean.c = NA, sd.c = NA,
+                            effect = meta$TE.random, se = meta$seTE.random,
+                            w.fixed = 0, w.random = 100, mean = meta$TE.random,
+                            lower = summMeta$random$lower,
+                            upper = summMeta$random$upper, summary = TRUE)
+
+  ## step 3: customize the main data frame
+  ## attach additional columns to the meta object
+  if (!is.null(add)){
+    ## attach the additional column to the main data frame
     DF <- cbind(DF, add)
-    ## adds empty columns to summary data frames
+    ## attach the corresponding space to the summary data frame
     addspace <- lapply(add, function(x){x <- ""})
-    ## is.na(addspace) <- c(1:length(addspace))
-    summary.fixed <- cbind(summary.fixed, addspace)
-    summary.random <- cbind(summary.random, addspace)
+    summaryFixed <- cbind(summaryFixed, addspace)
+    summaryRandom <- cbind(summaryRandom, addspace)
   }
-  ## specify row order
-  nr <- NROW(DF)
+
+  ## specify row orders
   if (!is.null(rowOrder)) {
     order <- order(DF[, rowOrder], ...)
     DF <- DF[order, ]
   }
-  ## dealing with grouped studies
-  if(!is.null(meta$byvar)) {
-    overall.fixed <- summary.fixed
-    overall.random <- summary.random
-    gp <- meta$byvar
+
+  ## step 4: heterogenity information
+  hetero <- c(Q = summMeta$Q, df = summMeta$k - 1,
+              p = pchisq(summMeta$Q, summMeta$k - 1, lower.tail =FALSE),
+              tau2 = summMeta$tau^2,
+              H = summMeta$H$TE,
+              H.lower = summMeta$H$lower,
+              H.upper = summMeta$H$upper,
+              I2 = summMeta$I2$TE,
+              I2.lower = summMeta$I2$lower,
+              I2.upper = summMeta$I2$upper,
+              Q.CMH = summMeta$Q.CMH)
+
+  ## step 5: grouped studies
+  if (!is.null(meta$byvar)){
     Group <- list()
-    for (i in 1:max(gp)) {
-      df <- DF[gp==i,]
-      df["group"] <- i
-      summary.fixed <- forestDf("Fixed effect",
-                                sum(meta$n.e[gp==i]), NA, NA,
-                                sum(meta$n.c[gp==i]), NA, NA,
-                                sum.meta$within.fixed$TE[i],
-                                sum.meta$within.fixed$seTE[i],
-                                0, 0,
-                                sum.meta$within.fixed$TE[i],
-                                sum.meta$within.fixed$lower[i],
-                                sum.meta$within.fixed$upper[i],
-                                i)
-      summary.random <- forestDf("Random effects",
-                                 NA, NA, NA,
-                                 NA, NA, NA,
-                                 sum.meta$within.random$TE[i],
-                                 sum.meta$within.random$seTE[i],
-                                 0, 0,
-                                 sum.meta$within.random$TE[i],
-                                 sum.meta$within.random$lower[i],
-                                 sum.meta$within.random$upper[i],
-                                 i)
-      hetero.w <- c(sum.meta$Q.w[i],
-                    sum.meta$k.w[i] - 1,
-                    pchisq(sum.meta$Q.w[i], sum.meta$k.w[i] - 1,
-                           lower.tail = FALSE))
-      Group[[i]] <- list(DF = df,
-                         summary.fixed = summary.fixed,
-                         summary.random = summary.random,
-                         hetero = hetero.w)
+    gp <- DF["group"]
+    for (i in 1:max(gp)){
+      ## set up of the main DF for the group
+      df <- DF[gp == i, ]
+      ## fixed effect for the group
+      groupFixed <- forestDF(meta, study = "Fixed Effect",
+                             n.e = sum(meta$n.e[gp == i]),
+                             mean.e = NA, sd.e = NA,
+                             n.c = sum(meta$n.c[gp == i]),
+                             mean.c = NA, sd.c = NA,
+                             effect = summMeta$within.fixed$TE[i],
+                             se = summMeta$within.fixed$seTE[i],
+                             w.fixed = 0, w.random = 0,
+                             mean = summMeta$within.fixed$TE[i],
+                             lower = summMeta$within.fixed$lower[i],
+                             upper = summMeta$within.fixed$upper[i],
+                             summary = TRUE)
+
+      ## random effect for the group
+      groupRandom <-forestDF(meta, study = "Random Effect",
+                             n.e = NA, mean.e = NA, sd.e = NA,
+                             n.c = NA, mean.c = NA, sd.c = NA,
+                             effect = summMeta$within.random$TE[i],
+                             se = summMeta$within.random$seTE[i],
+                             w.fixed = 0, w.random = 0,
+                             mean = summMeta$within.random$TE[i],
+                             lower = summMeta$within.random$lower[i],
+                             upper = summMeta$within.random$upper[i],
+                             summary = TRUE)
+
+      ## heterogeneity information for the group
+      hetero.w <- c(Q = summMeta$Q.w[i], df = summMeta$k.w[i] - 1,
+                    p = pchisq(summMeta$Q.w[i], summMeta$k.w[i] - 1,
+                               lower.tail = FALSE),
+                    tau2 = summMeta$tau.w[i]^2,
+                    H = summMeta$H.w$TE[i],
+                    H.lower = summMeta$H.w$lower[i],
+                    H.upper = summMeta$H.w$upper[i],
+                    I2 = summMeta$I2.w$TE[i],
+                    I2.lower = summMeta$I2.w$lower[i],
+                    I2.upper = summMeta$I2.w$upper[i])
+
+      ## set up the group
+      Group[[i]] <- list(DF = df, summaryFixed = groupFixed,
+                         summaryRandom = groupRandom, hetero = hetero.w)
     }
   }
-  ## heterogeneity info
-  hetero <- c(meta$Q,
-              meta$k - 1,
-              pchisq(meta$Q, meta$k - 1, lower.tail = FALSE))
-  ## titles
+
+  ## step 6: set up the titles
   title <- title
   subtitle <- subtitle
 
-  ## create list
-  if(!is.null(meta$byvar)) {
-    output <- list(Group = Group,
-                   overall.fixed = overall.fixed,
-                   overall.random = overall.random,
-                   hetero = hetero, title = title, subtitle = subtitle)
+  ## step 7: the wrap up
+  if (!is.null(meta$byvar)) {
+    output <- list(Group = Group, overallFixed = summaryFixed,
+                   overallRandom = summaryRandom, hetero = hetero,
+                   title = title, subtitle = subtitle)
     class(output) <- c("groupedMetaDF", "metacontDF", "metaDF")
-  } else {
-    output <- list(DF = DF,
-                   summary.fixed = summary.fixed,
-                   summary.random = summary.random,
-                   hetero = hetero, title = title, subtitle = subtitle)
+  }
+  else{
+    output <- list(DF = DF, summaryFixed = summaryFixed,
+                   summaryRandom = summaryRandom, hetero = hetero,
+                   title = title, subtitle = subtitle)
     class(output) <- c("metacontDF", "metaDF")
   }
+  output
+}
+
+###========================rmeta=============================###
+
+### meta.MH
+meta2DF.meta.MH <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
+                            title = NULL, subtitle = NULL, ...) {
+
+  summMeta <- summary(rmeta)
+  ## step 1: set up main data frame
+  DF <- forestDF(object = rmeta, study = rmeta$names,
+                 effect = summMeta$stats[, rmeta$statistic],
+                 se = if (rmeta$statistic == "OR") {
+                        rmeta$selogOR
+                      } else {
+                        rmeta$selogRR
+                      },
+                 rate = log(summMeta$stats[, rmeta$statistic]),
+                 lower = log(summMeta$stats[, "(lower "]),
+                 upper = log(summMeta$stats[, paste(100*rmeta$conf.level,
+                                                    "% upper)", sep = "")]))
+
+  ## step 2: set up fixed effect
+  summaryFixed <- forestDF(object = rmeta, study = "Fixed effect",
+                           effect = summMeta$MHci[2],
+                           se = rmeta$selogMH,
+                           rate = log(summMeta$MHci[2]),
+                           lower = log(summMeta$MHci[1]),
+                           upper = log(summMeta$MHci[3]))
+
+  ## step 3: set up random effect
+  summaryRandom <- NULL
+
+  ## step 4: substitute the columns
+  if (!is.null(sub)) {
+    colNames <- names(sub)
+    if (!all(colNames %in% colnames(DF))){
+      stop("the columns to be substituted do not exist")
+    }
+    if (!all(sapply(sub, function(sub) length(sub$DF)) == nrow(DF))){
+      stop("the length of the substituted column differs from its corresponding column")
+    }
+    DF[, names(sub)] <- sapply(sub,
+                               function(sub, DF) {DF[, names(sub)] <- sub$DF},
+                               DF = DF)
+    summaryFixed[, names(sub)] <- sapply(sub,
+                                         function(sub, DF) {
+                                           DF[, names(sub)] <- sub$sum
+                                         },
+                                         DF = DF)
+  }
+
+  ## step 4: customizethe main data frame
+  ## attach additional columns to the rmeta object
+  if (!is.null(add)) {
+    ## attach the additional column to the main data frame
+    DF <- cbind(DF, add)
+    ## attach the corresponding space to the summary data frame
+    addspace <- lapply(add, function(x){x <- ""})
+    summaryFixed <- cbind(summaryFixed, addspace)
+  }
+
+  ## specify row orders
+  if (!is.null(rowOrder)) {
+    Order <- order(DF[, rowOrder], ...)
+    DF <- DF[Order, ]
+  }
+
+  ## step 5: heterogeneity information
+  hetero <- c(Q = rmeta$het[1], df = rmeta$het[2],
+              p = rmeta$het[3], tau2 = NA,
+              H = NA, H.lower = NA, H.upper = NA,
+              I2 = NA, I2.lower = NA, I2.upper = NA,
+              Q.CMH = NA, conf.level = rmeta$conf.level)
+
+  ## step 6: set up the titles
+  Title <- title
+  Subtitle <- subtitle
+
+  ## step 7: the wrap up
+  output <- list(DF = DF, summaryFixed = summaryFixed,
+                 summaryRandom = summaryRandom,
+                 hetero = hetero, title = Title, subtitle = Subtitle)
+  class(output) <- c("metabinDF", "metaDF")
+
+  output
+}
+
+## meta.DSL
+meta2DF.meta.DSL <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
+                             title = NULL, subtitle = NULL, ...) {
+
+  summMeta <- summary(rmeta)
+  ## step 1: set up main data frame
+  DF <- forestDF(object = rmeta, study = rmeta$names,
+                 effect = summMeta$ors[, rmeta$statistic],
+                 se = if (rmeta$statistic == "OR"){
+                        rmeta$selogs
+                      } else {
+                        rmeta$selogs
+                      },
+                 rate = log(summMeta$ors[, rmeta$statistic]),
+                 lower = log(summMeta$ors[, "(lower "]),
+                 upper = log(summMeta$ors[, paste(100*rmeta$conf.level,
+                                                  "% upper)", sep = "")]))
+
+
+  ## step 2: set up fixed effect
+  summaryFixed <- NULL
+
+  ## step 3: set up random effect
+  summaryRandom <- forestDF(object = rmeta, study = "Random effect",
+                            effect = summMeta$ci[2],
+                            se = rmeta$selogDSL,
+                            rate = log(summMeta$ci[2]),
+                            lower = log(summMeta$ci[1]),
+                            upper = log(summMeta$ci[3]))
+
+  ## step 4: substitute the columns
+  if (!is.null(sub)) {
+    colNames <- names(sub)
+    if (!all(colNames %in% colnames(DF))){
+      stop("the columns to be substituted do not exist")
+    }
+    if (!all(sapply(sub, function(sub) length(sub$DF)) == nrow(DF))){
+      stop("the length of the substituted column differs from its correponding column")
+    }
+    DF[, names(sub)] <- sapply(sub,
+                               function(sub, DF) {DF[, names(sub)] <- sub$DF},
+                               DF = DF)
+    summaryFixed[, names(sub)] <- sapply(sub,
+                                         function(sub, DF) {
+                                           DF[, names(sub)] <- sub$sum
+                                         },
+                                         DF = DF)
+  }
+
+  ## step 4: customization on the main data frame
+  ## attach additional columns to the rmeta object
+  if (!is.null(add)) {
+    # attach the additional column to the main data frame
+    DF <- cbind(DF, add)
+    # attach the corresponding space to the summary data frame
+    addspace <- lapply(add, function(x){x <- ""})
+    summaryFixed <- cbind(summaryFixed, addspace)
+  }
+
+  ## specify row orders
+  if (!is.null(rowOrder)) {
+    Order <- order(DF[, rowOrder], ...)
+    DF <- DF[Order, ]
+  }
+
+  ## step 5: heterogeneity information
+  hetero <- c(Q = rmeta$het[1], df = rmeta$het[2],
+              p = rmeta$het[3], tau2 = NA,
+              H = NA, H.lower = NA, H.upper = NA,
+              I2 = NA, I2.lower = NA, I2.upper = NA,
+              Q.CMH = NA, conf.level = rmeta$conf.level)
+
+  ## step 6: set up the titles
+  Title <- title
+  Subtitle <- subtitle
+
+  ## step 7: the wrap up
+  output <- list(DF = DF, summaryFixed = summaryFixed,
+                 summaryRandom = summaryRandom,
+                 hetero = hetero, title = Title, subtitle = Subtitle)
+  class(output) <- c("metabinDF", "metaDF")
+
+  output
+}
+
+###=============================metafor================================###
+## rma.mh
+meta2DF.rma.mh <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
+                           title = NULL, subtitle = NULL, ...) {
+
+  CI <- ciGen(rma)
+  if (!any(names(sub) %in% "study")) {
+    study.names <- paste("study", 1:length(CI$DF$mean))
+  }
+  ## step 1: set up main data frame
+  DF <- forestDF(object = rma, study = study.names,
+                 n.e = rma$ai, event.e = rma$ai + rma$bi,
+                 n.c = rma$ci, event.c = rma$ci + rma$di,
+                 effect = exp(CI$DF$mean), se = sqrt(rma$vi),
+                 w.fixed = weights(rma),
+                 mean = CI$DF$mean, lower = CI$DF$lower,
+                 upper = CI$DF$upper)
+
+  ## step 2: set up fixed effect
+  summaryFixed <- forestDF(object = rma, study = "Fixed effect",
+                           n.e = NA, event.e = NA,
+                           n.c = NA, event.c = NA,
+                           effect = exp(CI$FE$mean),
+                           se = rma$se,
+                           w.fixed = 100,
+                           mean = CI$FE$mean, lower = CI$FE$lower,
+                           upper = CI$FE$upper)
+
+  ## step 3: set up random effect
+  summaryRandom <- NULL
+
+  ## step 4: substitute the columns
+  if (!is.null(sub)) {
+    colNames <- names(sub)
+    if (!all(colNames %in% colnames(DF))){
+      stop("the columns to be substituted do not exist")
+    }
+    if (!all(sapply(sub, function(sub) length(sub$DF)) == nrow(DF))){
+      stop("the length of the substituted column differs from its correponding column")
+    }
+    DF[, names(sub)] <- sapply(sub,
+                               function(sub, DF) {DF[, names(sub)] <- sub$DF},
+                               DF = DF)
+    summaryFixed[, names(sub)] <- sapply(sub,
+                                         function(sub, DF) {
+                                           DF[, names(sub)] <- sub$sum
+                                         },
+                                         DF = DF)
+  }
+
+  ## step 4: customization on the main data frame
+  # attach additional columns to the rmeta object
+  if (!is.null(add)) {
+    ## attach the additional column to the main data frame
+    DF <- cbind(DF, add)
+    ## attach the corresponding space to the summary data frame
+    addspace <- lapply(add, function(x){x <- ""})
+    summaryFixed <- cbind(summaryFixed, addspace)
+  }
+
+  ## specify row orders
+  if (!is.null(rowOrder)) {
+    Order <- order(DF[, rowOrder], ...)
+    DF <- DF[Order, ]
+  }
+
+  ## step 5: heterogeneity information
+  hetero <- c(Q = rma$QE, df = rma$k.yi - 1,
+              p = rma$QEp, tau2 = rma$tau2,
+              H = NA, H.lower = NA, H.upper = NA,
+              I2 = NA, I2.lower = NA, I2.upper = NA,
+              Q.CMH = rma$MH,
+              conf.level = ifelse(rma$level > 1, rma$level/100, rma$level))
+
+  ## step 6: set up the titles
+  Title <- title
+  Subtitle <- subtitle
+
+  ## step 7: the wrap up
+  output <- list(DF = DF, summaryFixed = summaryFixed,
+                 summaryRandom = summaryRandom,
+                 hetero = hetero, title = Title, subtitle = Subtitle)
+
+  class(output) <- c("metabinDF", "metaDF")
+
+  output
+}
+
+## rma.peto
+meta2DF.rma.peto <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
+                             title = NULL, subtitle = NULL, ...) {
+
+  CI <- ciGen(rma)
+  if (!any(names(sub) %in% "study")) {
+    study.names <- paste("study", 1:length(CI$DF$mean))
+  }
+  ## step 1: set up main data frame
+  DF <- forestDF(object = rma, study = study.names,
+                 n.e = rma$ai, event.e = rma$ai + rma$bi,
+                 n.c = rma$ci, event.c = rma$ci + rma$di,
+                 effect = exp(CI$DF$mean), se = sqrt(rma$vi),
+                 w.fixed = weights(rma),
+                 mean = CI$DF$mean, lower = CI$DF$lower,
+                 upper = CI$DF$upper)
+
+  ## step 2: set up fixed effect
+  summaryFixed <- forestDF(object = rma, study = "Fixed effect",
+                           n.e = NA, event.e = NA,
+                           n.c = NA, event.c = NA,
+                           effect = exp(CI$FE$mean),
+                           se = rma$se, w.fixed = 100,
+                           mean = CI$FE$mean, lower = CI$FE$lower,
+                           upper = CI$FE$upper)
+
+  ## step 3: set up random effect
+  summaryRandom <- NULL
+
+  ## step 4: substitute the columns
+  if (!is.null(sub)) {
+    colNames <- names(sub)
+    if (!all(colNames %in% colnames(DF))){
+      stop("the columns to be substituted do not exist")
+    }
+    if (!all(sapply(sub, function(sub) length(sub$DF)) == nrow(DF))){
+      stop("the length of the substituted column differs from its correponding column")
+    }
+    DF[, names(sub)] <- sapply(sub,
+                               function(sub, DF) {DF[, names(sub)] <- sub$DF},
+                               DF = DF)
+    summaryFixed[, names(sub)] <- sapply(sub,
+                                         function(sub, DF) {
+                                           DF[, names(sub)] <- sub$sum
+                                         },
+                                         DF = DF)
+  }
+
+  ## step 4: customization on the main data frame
+  ## attach additional columns to the rmeta object
+  if (!is.null(add)) {
+    ## attach the additional column to the main data frame
+    DF <- cbind(DF, add)
+    ## attach the corresponding space to the summary data frame
+    addspace <- lapply(add, function(x){x <- ""})
+    summaryFixed <- cbind(summaryFixed, addspace)
+  }
+
+  ## specify row orders
+  if (!is.null(rowOrder)) {
+    Order <- order(DF[, rowOrder], ...)
+    DF <- DF[Order, ]
+  }
+
+  ## step 5: heterogeneity information
+  hetero <- c(Q = rma$QE, df = rma$k.yi - 1,
+              p = rma$QEp, tau2 = rma$tau2,
+              H = NA, H.lower = NA, H.upper = NA,
+              I2 = NA, I2.lower = NA, I2.upper = NA, Q.CMH = NA,
+              conf.level = ifelse(rma$level > 1, rma$level/100, rma$level))
+
+  ## step 6: set up the titles
+  Title <- title
+  Subtitle <- subtitle
+
+  ## step 7: the wrap up
+  output <- list(DF = DF, summaryFixed = summaryFixed,
+                 summaryRandom = summaryRandom,
+                 hetero = hetero, title = Title, subtitle = Subtitle)
+
+  class(output) <- c("metabinDF", "metaDF")
+
+  output
+}
+
+
+###===============rma.uni==================###
+meta2DF.rma.uni <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
+                            title = NULL, subtitle = NULL, ...) {
+
+  CI <- ciGen(rma)
+  if (!any(names(sub) %in% "study")) {
+    study.names <- paste("study", 1:length(CI$DF$mean))
+  }
+  ## step 1: set up main data frame
+  DF <- forestDF(object = rma, study = study.names,
+                 n.e = rma$ai, event.e = rma$ai + rma$bi,
+                 n.c = rma$ci, event.c = rma$ci + rma$di,
+                 effect = exp(CI$DF$mean), se = sqrt(rma$vi),
+                 w.random = weights(rma),
+                 mean = CI$DF$mean, lower = CI$DF$lower,
+                 upper = CI$DF$upper)
+
+  ## step 2: set up fixed effect
+  summaryRandom <- forestDF(object = rma, study = "Fixed effect",
+                            n.e = NA, event.e = NA,
+                            n.c = NA, event.c = NA,
+                            effect = exp(CI$FE$mean),
+                            se = rma$se, w.random = NA,
+                            mean = CI$FE$mean, lower = CI$FE$lower,
+                            upper = CI$FE$upper)
+
+  ## step 3: set up random effect
+  summaryRandom <- NULL
+
+  ## step 4: substitute the columns
+  if (!is.null(sub)) {
+    colNames <- names(sub)
+    if (!all(colNames %in% colnames(DF))){
+      stop("the columns to be substituted do not exist")
+    }
+    if (!all(sapply(sub, function(sub) length(sub$DF)) == nrow(DF))){
+      stop("the length of the substituted column differs from its correponding column")
+    }
+    DF[, names(sub)] <- sapply(sub,
+                               function(sub, DF) {DF[, names(sub)] <- sub$DF},
+                               DF = DF)
+    summaryFixed[, names(sub)] <- sapply(sub,
+                                         function(sub, DF) {
+                                           DF[, names(sub)] <- sub$sum
+                                         },
+                                         DF = DF)
+  }
+
+  ## step 4: customize the main data frame
+  # attach additional columns to the rmeta object
+  if (!is.null(add)) {
+    ## attach the additional column to the main data frame
+    DF <- cbind(DF, add)
+    # attach the corresponding space to the summary data frame
+    addspace <- lapply(add, function(x){x <- ""})
+    summaryFixed <- cbind(summaryFixed, addspace)
+  }
+
+  ## specify row orders
+  if (!is.null(rowOrder)) {
+    Order <- order(DF[, rowOrder], ...)
+    DF <- DF[Order, ]
+  }
+
+  ## step 5: heterogeneity information
+  hetero <- c(Q = rma$QE, df = rma$k.yi - 1,
+              p = rma$QEp, tau2 = rma$tau2,
+              H = NA, H.lower = NA, H.upper = NA,
+              I2 = NA, I2.lower = NA, I2.upper = NA, Q.CMH = NA,
+              conf.level = ifelse(rma$level > 1, rma$level/100, rma$level))
+
+  ## step 6: set up the titles
+  Title <- title
+  Subtitle <- subtitle
+
+  ## step 7: the wrap up
+  output <- list(DF = DF, summaryFixed = summaryFixed,
+                 summaryRandom = summaryRandom,
+                 hetero = hetero, title = Title, subtitle = Subtitle)
+
+  class(output) <- c("metabinDF", "metaDF")
+
   output
 }
 

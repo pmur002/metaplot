@@ -35,9 +35,9 @@ An object of class \code{'metabinDF'} and \code{'metaDF'} with following
 list of components:
   \item{DF}{A data frame with studies as rows and study attributes as
     columns.}
-  \item{summary.fixed}{A data frame with attributes of fixed effects
+  \item{summaryFixed}{A data frame with attributes of fixed effects
     model.}
-  \item{summary.random}{A data frame with attributes of the random
+  \item{summaryRandom}{A data frame with attributes of the random
     effects model.}
   \item{hetero}{Heterogenity-Q statistic, degrees of freedom, p-value.}
   \item{title}{Title of the meta-analysis.}

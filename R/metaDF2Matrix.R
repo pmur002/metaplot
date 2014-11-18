@@ -17,7 +17,7 @@ metaDF2Matrix.metabinDF <-
            ...)
 {
   DF <- df$DF
-  summary <- rbind(df$summary.fixed, df$summary.random)
+  summary <- rbind(df$summaryFixed, df$summaryRandom)
 
   ## add new columns
   newcolnames <- names(newCols)
@@ -158,7 +158,7 @@ metaDF2Matrix.metacontDF <-
     if (k == 1) {   # no group
       data <- df
       DF <- data$DF
-      summary <- rbind(data$summary.fixed, data$summary.random)
+      summary <- rbind(data$summaryFixed, data$summaryRandom)
     } else {
       if (g == k) {     # group overall summary
         data <- df
@@ -167,7 +167,7 @@ metaDF2Matrix.metacontDF <-
       } else {                     # individual group
         data <- df$Group[[i]]
         DF <- data$DF
-        summary <- rbind(data$summary.fixed, data$summary.random)
+        summary <- rbind(data$summaryFixed, data$summaryRandom)
       }
     }
     ## add new columns
