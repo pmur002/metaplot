@@ -15,6 +15,7 @@
 \alias{forestDF.rma.mh}
 \alias{forestDF.rma.peto}
 \alias{forestDF.rma.uni}
+\alias{drawMetaBasic}
 
 
 \title{Internal metaplot Functions}

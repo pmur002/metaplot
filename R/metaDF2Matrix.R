@@ -162,7 +162,7 @@ metaDF2Matrix.metacontDF <-
     } else {
       if (g == k) {     # group overall summary
         data <- df
-        DF <- rbind(data$overall.fixed, data$overall.random)
+        DF <- rbind(data$overallFixed, data$overallRandom)
         summary <- NULL
       } else {                     # individual group
         data <- df$Group[[i]]
