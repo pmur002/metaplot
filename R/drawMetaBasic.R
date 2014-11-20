@@ -6,11 +6,11 @@ drawMetaBasic <- function(matrix, plotCol, plotHead, xlab, refLine,
   require("rmeta") || stop("'rmeta' package not found")
 
   ## assigning names to "matrix" components
-  labeltext <- matrix$Matrix
-  mean <- matrix$PlotDF[, "mean"]
-  lower <- matrix$PlotDF[, "lower"]
-  upper <- matrix$PlotDF[, "upper"]
-  is.summary <- matrix$PlotDF[, "Is.summary"]
+  labeltext <- matrix$matrix
+  mean <- matrix$plotDF[, "mean"]
+  lower <- matrix$plotDF[, "lower"]
+  upper <- matrix$plotDF[, "upper"]
+  is.summary <- matrix$plotDF[, "is.summary"]
 
   ## creating vectors of study(row) and column names to label grobs
   if (abbreviate) {

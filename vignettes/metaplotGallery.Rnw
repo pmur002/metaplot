@@ -167,7 +167,7 @@ after which it can be plotted by a call to the generic
 comprises a single group only. First the data is retrieved and
 transformed.
 
-<<metabin2>>=
+<<metacont1>>=
 data(Fleiss93cont)
 meta1 <- metacont(n.e, mean.e, sd.e, n.c, mean.c,
                   sd.c, data = Fleiss93cont, sm = "SMD")
@@ -189,7 +189,7 @@ drawMeta(matrix,
 
 It is also possible to produce a forest plot of data where there are groups
 
-<<metabin3>>=
+<<metacont2>>=
 meta <- metacont(n.e, mean.e, sd.e, n.c, mean.c, sd.c,
                  data = Fleiss93cont, sm = "SMD",
                  byvar = c(1,2,1,1,2), bylab = "group")
@@ -212,6 +212,47 @@ drawMeta(matrix,
 
 \clearpage
 
+For binary outcome data, the \code{metabin()} function from the
+\code{'meta'} package produces an object of class \code{c('metabin',
+  'meta')}. This object is converted to a data frame then a matrix
+after which it can be plotted by a call to the generic
+\code{drawMeta}. Here is an example of this procedure when the data
+comprises a number of groups. The data in this case is from the
+\pkg{metafor} package. First the data is retrieved and
+transformed.
+
+<<metabin2>>=
+require(metafor)
+data(dat.bcg)
+str(dat.bcg)
+bcg <- data.frame(event.e = dat.bcg$tpos, n.e = dat.bcg$tpos + dat.bcg$tneg,
+                  event.c = dat.bcg$cpos, n.c = dat.bcg$cpos + dat.bcg$cneg,
+                  study = dat.bcg$author, year = dat.bcg$year)
+
+meta <- metabin(event.e, n.e, event.c, n.c,
+                studlab = paste(study, year),
+                data = bcg, sm = "RR",
+                byvar = c(2,2,2,2,3,3,2,2,2,1,1,1,1),
+                bylab = "")
+Data <- meta2DF(meta, title = "BCG Vaccine Against Tuberculosis",
+                rowOrder = "effect", decreasing = TRUE)
+matrix <- metaDF2Matrix(Data,
+                        groupLab = c("Systematic Allocation",
+                                     "Random Allocation",
+                                     "Alternate Allocation",
+                                     "Overall"),
+                        order = c("study", "event.e", "n.e",
+                                  "event.c", "n.c", "effect"),
+                        roundCols = c("effect" = 2))
+@
+
+Then the plot can be drawn.
+
+<<drawMeta5, fig.width=7, fig.height=2, out.width = '\\linewidth', fig.cap = "Forest plot from \\code{drawMeta()} with continuous outcome data">>=
+drawMeta(matrix,
+         plotCol = 6,
+         plotHead = "Relative Risk")
+@
 
 
 \end{document}

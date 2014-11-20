@@ -16,7 +16,17 @@
 \alias{forestDF.rma.peto}
 \alias{forestDF.rma.uni}
 \alias{drawMetaBasic}
-
+\alias{matrixify}
+\alias{mainGen}
+\alias{addCols}
+\alias{setUpRound}
+\alias{roundUpCols}
+\alias{plotDF}
+\alias{makeStatsDesc}
+\alias{makeStats}
+\alias{addStats}
+\alias{addLabel}
+\alias{heteroGen}
 
 \title{Internal metaplot Functions}
 \description{
