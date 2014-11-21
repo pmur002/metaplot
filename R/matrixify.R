@@ -25,8 +25,8 @@ matrixify <- function(df, order, newCols, roundCols, stats,
     summary <- list(fixed = df$summaryFixed, random = df$summaryRandom)
   } else { # matrixify for overall summary
     ## summary
-    # extract the overall summary
-    summary <- list(fixed = df$overall.fixed, random = df$overall.random)
+    ## extract the overall summary
+    summary <- list(fixed = df$overallFixed, random = df$overallRandom)
   }
 
   summary <- lapply(summary, mainGen, order = order, newCols = newCols,
@@ -36,8 +36,12 @@ matrixify <- function(df, order, newCols, roundCols, stats,
   round.sum <- rbind(summary$fixed, summary$random)
   rowNames <- c("fixed", "random")
   whichShows <- sapply(summary, is.null)
-  rownames(round.sum) <- rowNames[!whichShows]
-  matrix.sum <- as.matrix(round.sum)
+  if (length(rowNames[!whichShows]) > 0){
+    rownames(round.sum) <- rowNames[!whichShows]
+    matrix.sum <- as.matrix(round.sum)
+  } else {
+    matrix.sum <- NULL
+  }
 
   ## hetero information
   if (is.null(stats)) {
@@ -49,15 +53,22 @@ matrixify <- function(df, order, newCols, roundCols, stats,
                                stats = stats, newLabel = newLabel,
                                metaClass = metaClass, overallSum = overallSum)
 
-    rownames(matrix.hetero) <- rep("hetero", nrow(matrix.hetero))
+    if (!is.null(matrix.hetero)){
+      rownames(matrix.hetero) <- rep("hetero", nrow(matrix.hetero))
+    }
   }
 
 
   ## set up the main matrix
   if (!overallSum) {
     if (any(metaClass %in% "groupedMetaDF")) {
-        matrix.full <- rbind(matrix.DF, matrix.sum, hetero = matrix.hetero,
-                             gap = ifelse(is.null(hgap), "", NULL))
+      if( is.null(hgap)) {
+        gap <- rep("", NCOL(matrix.DF))
+      } else {
+        gap <- NULL
+      }
+      matrix.full <- rbind(matrix.DF, matrix.sum, hetero = matrix.hetero,
+                           gap = gap)
     } else {
       matrix.full <- rbind(matrix.DF, matrix.sum, hetero = matrix.hetero)
     }

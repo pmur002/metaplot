@@ -19,9 +19,13 @@ heteroGen <- function(hetero, df, stats, newLabel, metaClass, overallSum) {
                          label = hetero.label, hetero = hetero)
 
   ## step 4: transform it into a matrix
-  t(sapply(hetero.stats,
-           function(stats, df) c(stats, rep("", ncol(df) - 1)),
-           df = df))
+  if (is.null(df)) {
+    NULL
+  } else {
+    t(sapply(hetero.stats,
+             function(stats, df) c(stats, rep("", ncol(df) - 1)),
+             df = df))
+  }
 }
 
 ###===========================addLabel===================================###

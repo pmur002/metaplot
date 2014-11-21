@@ -27,6 +27,7 @@
 \alias{addStats}
 \alias{addLabel}
 \alias{heteroGen}
+\alias{setGroupLabel}
 
 \title{Internal metaplot Functions}
 \description{

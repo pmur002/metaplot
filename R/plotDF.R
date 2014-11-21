@@ -20,7 +20,7 @@ plotDF <- function(df, hetero, hgap, overallSum, metaClass)
 
   } else {
     ## step 1: generate plotting parameters for the summary (overall summary)
-    summary <- rbind(fixed = df$overall.fixed, random = df$overall.random)
+    summary <- rbind(fixed = df$overallFixed, random = df$overallRandom)
   }
 
   plot.sum <- data.frame(mean = summary["mean"],
@@ -41,8 +41,13 @@ plotDF <- function(df, hetero, hgap, overallSum, metaClass)
   if (!overallSum) {
     ## step 6: combination (normal DF)
     if (any(metaClass %in% "groupedMetaDF")) {
+      if (is.null(hgap)){
+        gap <- rep(NA, NCOL(plot.main))
+      } else {
+        gap <- NULL
+      }
       plot.DF <- rbind(plot.main, plot.sum, plot.hetero,
-                       ifelse(is.null(hgap), NA, NULL))
+                       gap)
     } else {
       plot.DF <- rbind(plot.main, plot.sum, plot.hetero)
     }
