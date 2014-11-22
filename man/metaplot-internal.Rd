@@ -15,6 +15,10 @@
 \alias{forestDF.rma.mh}
 \alias{forestDF.rma.peto}
 \alias{forestDF.rma.uni}
+\alias{ciGen}
+\alias{ciGen.rma.mh}
+\alias{ciGen.rma.peto}
+\alias{ciGen.rma.uni}
 \alias{drawMetaBasic}
 \alias{matrixify}
 \alias{mainGen}
@@ -28,6 +32,7 @@
 \alias{addLabel}
 \alias{heteroGen}
 \alias{setGroupLabel}
+\alias{dropRows}
 
 \title{Internal metaplot Functions}
 \description{

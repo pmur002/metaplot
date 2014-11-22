@@ -9,14 +9,12 @@ used for plotting.
 }
 \usage{
 \method{metaDF2Matrix}{metacontDF}(df,
-              newCols = list(ci = makeCIDesc("lower", "upper", 2, c("[", "]")),
-              msd.e = makeMSDDesc("mean.e", "sd.e", c(1, 2), c(" (", ")")),
-              msd.c = makeMSDDesc("mean.c", "sd.c", c(1, 2), c(" (", ")"))),
-              order = c("study", "effect"),
-              roundCols = c("effect" = 2, "w.fixed" = 1, "w.random" = 1),
-              colNames = NULL, groupLab = NULL,
-              hgap = c(2, NROW(DF) + 1),
-              vgap = NULL, ...)
+             order, newCols = NULL,
+             roundCols = NULL,
+             stats = list(hetero = makeStatsDesc(labelNames =
+                                                 c("Q", "p", "df"))),
+             groupStats = NULL, newLabel = NULL, colNames,
+             groupLab, hgap = NULL, vgap, drop, ...)
 }
 \arguments{
   \item{df}{An object of class \code{'metacontDF'}.}

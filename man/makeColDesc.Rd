@@ -10,11 +10,11 @@ inside the \code{newCols} argument in the \code{metaDF2Matrix()}
 function.
 }
 \usage{
-makeColDesc(format, colnames)
+makeColDesc(format, colNames)
 }
 \arguments{
   \item{format}{Format string.}
-  \item{colnames}{Column names}
+  \item{colNames}{Column names}
 }
 \details{ 
 The column names are taken from the data frame of the \code{"metaDF"}
@@ -25,7 +25,7 @@ format within the \code{metaDF2Matrix()} function.
   An object of class \code{'coldesc'} with a list of following
   components:   
   \item{format}{A format string}
-  \item{colnames}{A character vector of column names}
+  \item{colNames}{A character vector of column names}
 }
 \seealso{
 \code{\link{makeCIDesc}}, \code{\link{makeMSDDesc}}

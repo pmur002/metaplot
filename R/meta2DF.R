@@ -295,27 +295,27 @@ meta2DF.metacont <- function(meta, add = NULL, rowOrder = NULL,
 ###========================rmeta=============================###
 
 ### meta.MH
-meta2DF.meta.MH <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
+meta2DF.meta.MH <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
                             title = NULL, subtitle = NULL, ...) {
 
-  summMeta <- summary(rmeta)
+  summMeta <- summary(meta)
   ## step 1: set up main data frame
-  DF <- forestDF(object = rmeta, study = rmeta$names,
-                 effect = summMeta$stats[, rmeta$statistic],
-                 se = if (rmeta$statistic == "OR") {
-                        rmeta$selogOR
+  DF <- forestDF(object = meta, study = meta$names,
+                 effect = summMeta$stats[, meta$statistic],
+                 se = if (meta$statistic == "OR") {
+                        meta$selogOR
                       } else {
-                        rmeta$selogRR
+                        meta$selogRR
                       },
-                 rate = log(summMeta$stats[, rmeta$statistic]),
+                 rate = log(summMeta$stats[, meta$statistic]),
                  lower = log(summMeta$stats[, "(lower "]),
-                 upper = log(summMeta$stats[, paste(100*rmeta$conf.level,
+                 upper = log(summMeta$stats[, paste(100*meta$conf.level,
                                                     "% upper)", sep = "")]))
 
   ## step 2: set up fixed effect
-  summaryFixed <- forestDF(object = rmeta, study = "Fixed effect",
+  summaryFixed <- forestDF(object = meta, study = "Fixed effect",
                            effect = summMeta$MHci[2],
-                           se = rmeta$selogMH,
+                           se = meta$selogMH,
                            rate = log(summMeta$MHci[2]),
                            lower = log(summMeta$MHci[1]),
                            upper = log(summMeta$MHci[3]))
@@ -342,8 +342,8 @@ meta2DF.meta.MH <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
                                          DF = DF)
   }
 
-  ## step 4: customizethe main data frame
-  ## attach additional columns to the rmeta object
+  ## step 4: customize the main data frame
+  ## attach additional columns to the meta object
   if (!is.null(add)) {
     ## attach the additional column to the main data frame
     DF <- cbind(DF, add)
@@ -359,11 +359,11 @@ meta2DF.meta.MH <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 5: heterogeneity information
-  hetero <- c(Q = rmeta$het[1], df = rmeta$het[2],
-              p = rmeta$het[3], tau2 = NA,
+  hetero <- c(Q = meta$het[1], df = meta$het[2],
+              p = meta$het[3], tau2 = NA,
               H = NA, H.lower = NA, H.upper = NA,
               I2 = NA, I2.lower = NA, I2.upper = NA,
-              Q.CMH = NA, conf.level = rmeta$conf.level)
+              Q.CMH = NA, conf.level = meta$conf.level)
 
   ## step 6: set up the titles
   Title <- title
@@ -379,21 +379,21 @@ meta2DF.meta.MH <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
 }
 
 ## meta.DSL
-meta2DF.meta.DSL <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
+meta2DF.meta.DSL <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
                              title = NULL, subtitle = NULL, ...) {
 
-  summMeta <- summary(rmeta)
+  summMeta <- summary(meta)
   ## step 1: set up main data frame
-  DF <- forestDF(object = rmeta, study = rmeta$names,
-                 effect = summMeta$ors[, rmeta$statistic],
-                 se = if (rmeta$statistic == "OR"){
-                        rmeta$selogs
+  DF <- forestDF(object = meta, study = meta$names,
+                 effect = summMeta$ors[, meta$statistic],
+                 se = if (meta$statistic == "OR"){
+                        meta$selogs
                       } else {
-                        rmeta$selogs
+                        meta$selogs
                       },
-                 rate = log(summMeta$ors[, rmeta$statistic]),
+                 rate = log(summMeta$ors[, meta$statistic]),
                  lower = log(summMeta$ors[, "(lower "]),
-                 upper = log(summMeta$ors[, paste(100*rmeta$conf.level,
+                 upper = log(summMeta$ors[, paste(100*meta$conf.level,
                                                   "% upper)", sep = "")]))
 
 
@@ -401,9 +401,9 @@ meta2DF.meta.DSL <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
   summaryFixed <- NULL
 
   ## step 3: set up random effect
-  summaryRandom <- forestDF(object = rmeta, study = "Random effect",
+  summaryRandom <- forestDF(object = meta, study = "Random effect",
                             effect = summMeta$ci[2],
-                            se = rmeta$selogDSL,
+                            se = meta$selogDSL,
                             rate = log(summMeta$ci[2]),
                             lower = log(summMeta$ci[1]),
                             upper = log(summMeta$ci[3]))
@@ -428,11 +428,11 @@ meta2DF.meta.DSL <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 4: customization on the main data frame
-  ## attach additional columns to the rmeta object
+  ## attach additional columns to the meta object
   if (!is.null(add)) {
-    # attach the additional column to the main data frame
+    ## attach the additional column to the main data frame
     DF <- cbind(DF, add)
-    # attach the corresponding space to the summary data frame
+    ## attach the corresponding space to the summary data frame
     addspace <- lapply(add, function(x){x <- ""})
     summaryFixed <- cbind(summaryFixed, addspace)
   }
@@ -444,11 +444,11 @@ meta2DF.meta.DSL <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 5: heterogeneity information
-  hetero <- c(Q = rmeta$het[1], df = rmeta$het[2],
-              p = rmeta$het[3], tau2 = NA,
+  hetero <- c(Q = meta$het[1], df = meta$het[2],
+              p = meta$het[3], tau2 = NA,
               H = NA, H.lower = NA, H.upper = NA,
               I2 = NA, I2.lower = NA, I2.upper = NA,
-              Q.CMH = NA, conf.level = rmeta$conf.level)
+              Q.CMH = NA, conf.level = meta$conf.level)
 
   ## step 6: set up the titles
   Title <- title
@@ -465,28 +465,28 @@ meta2DF.meta.DSL <- function(rmeta, add = NULL, sub = NULL, rowOrder = NULL,
 
 ###=============================metafor================================###
 ## rma.mh
-meta2DF.rma.mh <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
+meta2DF.rma.mh <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
                            title = NULL, subtitle = NULL, ...) {
 
-  CI <- ciGen(rma)
+  CI <- ciGen(meta)
   if (!any(names(sub) %in% "study")) {
     study.names <- paste("study", 1:length(CI$DF$mean))
   }
   ## step 1: set up main data frame
-  DF <- forestDF(object = rma, study = study.names,
-                 n.e = rma$ai, event.e = rma$ai + rma$bi,
-                 n.c = rma$ci, event.c = rma$ci + rma$di,
-                 effect = exp(CI$DF$mean), se = sqrt(rma$vi),
-                 w.fixed = weights(rma),
+  DF <- forestDF(object = meta, study = study.names,
+                 n.e = meta$ai, event.e = meta$ai + meta$bi,
+                 n.c = meta$ci, event.c = meta$ci + meta$di,
+                 effect = exp(CI$DF$mean), se = sqrt(meta$vi),
+                 w.fixed = weights(meta),
                  mean = CI$DF$mean, lower = CI$DF$lower,
                  upper = CI$DF$upper)
 
   ## step 2: set up fixed effect
-  summaryFixed <- forestDF(object = rma, study = "Fixed effect",
+  summaryFixed <- forestDF(object = meta, study = "Fixed effect",
                            n.e = NA, event.e = NA,
                            n.c = NA, event.c = NA,
                            effect = exp(CI$FE$mean),
-                           se = rma$se,
+                           se = meta$se,
                            w.fixed = 100,
                            mean = CI$FE$mean, lower = CI$FE$lower,
                            upper = CI$FE$upper)
@@ -514,7 +514,7 @@ meta2DF.rma.mh <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 4: customization on the main data frame
-  # attach additional columns to the rmeta object
+  ## attach additional columns to the meta object
   if (!is.null(add)) {
     ## attach the additional column to the main data frame
     DF <- cbind(DF, add)
@@ -530,12 +530,12 @@ meta2DF.rma.mh <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 5: heterogeneity information
-  hetero <- c(Q = rma$QE, df = rma$k.yi - 1,
-              p = rma$QEp, tau2 = rma$tau2,
+  hetero <- c(Q = meta$QE, df = meta$k.yi - 1,
+              p = meta$QEp, tau2 = meta$tau2,
               H = NA, H.lower = NA, H.upper = NA,
               I2 = NA, I2.lower = NA, I2.upper = NA,
-              Q.CMH = rma$MH,
-              conf.level = ifelse(rma$level > 1, rma$level/100, rma$level))
+              Q.CMH = meta$MH,
+              conf.level = ifelse(meta$level > 1, meta$level/100, meta$level))
 
   ## step 6: set up the titles
   Title <- title
@@ -552,28 +552,28 @@ meta2DF.rma.mh <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
 }
 
 ## rma.peto
-meta2DF.rma.peto <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
+meta2DF.rma.peto <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
                              title = NULL, subtitle = NULL, ...) {
 
-  CI <- ciGen(rma)
+  CI <- ciGen(meta)
   if (!any(names(sub) %in% "study")) {
     study.names <- paste("study", 1:length(CI$DF$mean))
   }
   ## step 1: set up main data frame
-  DF <- forestDF(object = rma, study = study.names,
-                 n.e = rma$ai, event.e = rma$ai + rma$bi,
-                 n.c = rma$ci, event.c = rma$ci + rma$di,
-                 effect = exp(CI$DF$mean), se = sqrt(rma$vi),
-                 w.fixed = weights(rma),
+  DF <- forestDF(object = meta, study = study.names,
+                 n.e = meta$ai, event.e = meta$ai + meta$bi,
+                 n.c = meta$ci, event.c = meta$ci + meta$di,
+                 effect = exp(CI$DF$mean), se = sqrt(meta$vi),
+                 w.fixed = weights(meta),
                  mean = CI$DF$mean, lower = CI$DF$lower,
                  upper = CI$DF$upper)
 
   ## step 2: set up fixed effect
-  summaryFixed <- forestDF(object = rma, study = "Fixed effect",
+  summaryFixed <- forestDF(object = meta, study = "Fixed effect",
                            n.e = NA, event.e = NA,
                            n.c = NA, event.c = NA,
                            effect = exp(CI$FE$mean),
-                           se = rma$se, w.fixed = 100,
+                           se = meta$se, w.fixed = 100,
                            mean = CI$FE$mean, lower = CI$FE$lower,
                            upper = CI$FE$upper)
 
@@ -600,7 +600,7 @@ meta2DF.rma.peto <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 4: customization on the main data frame
-  ## attach additional columns to the rmeta object
+  ## attach additional columns to the meta object
   if (!is.null(add)) {
     ## attach the additional column to the main data frame
     DF <- cbind(DF, add)
@@ -616,11 +616,11 @@ meta2DF.rma.peto <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 5: heterogeneity information
-  hetero <- c(Q = rma$QE, df = rma$k.yi - 1,
-              p = rma$QEp, tau2 = rma$tau2,
+  hetero <- c(Q = meta$QE, df = meta$k.yi - 1,
+              p = meta$QEp, tau2 = meta$tau2,
               H = NA, H.lower = NA, H.upper = NA,
               I2 = NA, I2.lower = NA, I2.upper = NA, Q.CMH = NA,
-              conf.level = ifelse(rma$level > 1, rma$level/100, rma$level))
+              conf.level = ifelse(meta$level > 1, meta$level/100, meta$level))
 
   ## step 6: set up the titles
   Title <- title
@@ -638,28 +638,28 @@ meta2DF.rma.peto <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
 
 
 ###===============rma.uni==================###
-meta2DF.rma.uni <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
+meta2DF.rma.uni <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
                             title = NULL, subtitle = NULL, ...) {
 
-  CI <- ciGen(rma)
+  CI <- ciGen(meta)
   if (!any(names(sub) %in% "study")) {
     study.names <- paste("study", 1:length(CI$DF$mean))
   }
   ## step 1: set up main data frame
-  DF <- forestDF(object = rma, study = study.names,
-                 n.e = rma$ai, event.e = rma$ai + rma$bi,
-                 n.c = rma$ci, event.c = rma$ci + rma$di,
-                 effect = exp(CI$DF$mean), se = sqrt(rma$vi),
-                 w.random = weights(rma),
+  DF <- forestDF(object = meta, study = study.names,
+                 n.e = meta$ai, event.e = meta$ai + meta$bi,
+                 n.c = meta$ci, event.c = meta$ci + meta$di,
+                 effect = exp(CI$DF$mean), se = sqrt(meta$vi),
+                 w.random = weights(meta),
                  mean = CI$DF$mean, lower = CI$DF$lower,
                  upper = CI$DF$upper)
 
   ## step 2: set up fixed effect
-  summaryRandom <- forestDF(object = rma, study = "Fixed effect",
+  summaryRandom <- forestDF(object = meta, study = "Fixed effect",
                             n.e = NA, event.e = NA,
                             n.c = NA, event.c = NA,
                             effect = exp(CI$FE$mean),
-                            se = rma$se, w.random = NA,
+                            se = meta$se, w.random = NA,
                             mean = CI$FE$mean, lower = CI$FE$lower,
                             upper = CI$FE$upper)
 
@@ -686,7 +686,7 @@ meta2DF.rma.uni <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 4: customize the main data frame
-  # attach additional columns to the rmeta object
+  ## attach additional columns to the meta object
   if (!is.null(add)) {
     ## attach the additional column to the main data frame
     DF <- cbind(DF, add)
@@ -702,11 +702,11 @@ meta2DF.rma.uni <- function(rma, add = NULL, sub = NULL, rowOrder = NULL,
   }
 
   ## step 5: heterogeneity information
-  hetero <- c(Q = rma$QE, df = rma$k.yi - 1,
-              p = rma$QEp, tau2 = rma$tau2,
+  hetero <- c(Q = meta$QE, df = meta$k.yi - 1,
+              p = meta$QEp, tau2 = meta$tau2,
               H = NA, H.lower = NA, H.upper = NA,
               I2 = NA, I2.lower = NA, I2.upper = NA, Q.CMH = NA,
-              conf.level = ifelse(rma$level > 1, rma$level/100, rma$level))
+              conf.level = ifelse(meta$level > 1, meta$level/100, meta$level))
 
   ## step 6: set up the titles
   Title <- title

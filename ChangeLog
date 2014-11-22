@@ -1,0 +1,33 @@
+2014-11-22    <d.scott@auckland.ac.nz>
+
+	* NAMESPACE changed to include new functions and methods from
+	Ethan's work.
+
+2014-11-21    <d.scott@auckland.ac.nz>
+
+	* Major changes to incorporate Ethan's work. Changed some names
+	(e.g. summary.fixed to summaryFixed) and the like, plus some
+	capitalizations (PlotDF to plotDF). Created a vignette and got the
+	vignette to build including grouped binary and continuous
+	analyses.
+
+2014-02-14  Ethan  <cli113@aucklanduni.ac.nz>
+
+	* There are problems with the drawing functions for other
+	packages. For rmeta, if the study for one group is over 12, the
+	vertical line for the effect will not be long enough. For metafor,
+	there is some problem with the x-axis. They are expected to be
+	corrected after finish the meta2DF for all of the objects in
+	metafor.
+
+2014-01-25  Ethan  <cli113@aucklanduni.ac.nz>
+
+	* separate all the steps in metaDF2Matrix into functions,
+	therefore it is more easier to check the problem within each part.
+
+2014-01-18  Ethan  <cli113@aucklanduni.ac.nz>
+
+	* meta2DF have been reconstructed into one coding style and
+	meta2DF.metabin can handle the grouped studies at the moment. The
+	related documentations are also stored.
+

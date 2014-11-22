@@ -11,16 +11,11 @@ matrix used for plotting.
 
 \usage{
 \method{metaDF2Matrix}{metabinDF}(df,
-          newCols = list(ci = makeCIDesc("e.lower", "e.upper",
-                                          2, c("[", "]"))),
-          order = c("study", "effect"),
-          roundCols = c("effect" = 2, "w.fixed" = 1, "w.random" = 1),
-          colNames = NULL,
-          hgap = c(2, NROW(DF) + 1),
-          vgap = NULL,
-          stat = list(makeLabelDesc(c("I2", "tau2", "p"),
-                      label = "Heterogeneity:")),
-          ...)
+             order, newCols = NULL, roundCols = NULL,
+             stats = list(hetero = makeStatsDesc(labelNames =
+                                                 c("I2", "tau2", "p"))),
+             groupStats = NULL, newLabel = NULL,
+             colNames, groupLab, hgap = NULL, vgap, drop, ...)
 }
 \arguments{
   \item{df}{An object of class \code{'metabinDF'}.}
