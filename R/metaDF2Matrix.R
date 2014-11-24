@@ -107,7 +107,7 @@ metaDF2Matrix.metacontDF <-
       order <- c("study", "effect")
     }
 
-    ## generate matrix of plotting
+    ## generate matrix for plotting
     groupDF <- df$Group
     groupMetaMatrix <- lapply(groupDF, matrixify, order = order,
                               newCols = newCols,
@@ -327,7 +327,7 @@ metaDF2Matrix.metabinDF <-
       order <- c("study", "effect")
     }
 
-    ## generate matrix of plotting
+    ## generate matrix for plotting
     groupDF <- df$Group
     groupMetaMatrix <- lapply(groupDF, matrixify, order = order,
                               newCols = newCols,

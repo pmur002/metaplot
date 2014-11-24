@@ -27,8 +27,8 @@ plotDF <- function(df, hetero, hgap, overallSum, metaClass)
                          lower = summary["lower"],
                          upper = summary["upper"])
 
-  ## step 5: generating the plotting parameters for the hetero (normal DF)
-  ## step 3: generating the plotting parameters for the hetero (overall summary)
+  ## step 4: generating the plotting parameters for the hetero (normal DF)
+  ## step 2: generating the plotting parameters for the hetero (overall summary)
   if (is.null(hetero)) {
     plot.hetero <- NULL
   } else {
@@ -39,25 +39,24 @@ plotDF <- function(df, hetero, hgap, overallSum, metaClass)
 
 
   if (!overallSum) {
-    ## step 6: combination (normal DF)
+    ## step 5: combination (normal DF)
     if (any(metaClass %in% "groupedMetaDF")) {
       if (is.null(hgap)){
         gap <- rep(NA, NCOL(plot.main))
       } else {
         gap <- NULL
       }
-      plot.DF <- rbind(plot.main, plot.sum, plot.hetero,
-                       gap)
+      plot.DF <- rbind(plot.main, plot.sum, plot.hetero, gap)
     } else {
       plot.DF <- rbind(plot.main, plot.sum, plot.hetero)
     }
   } else {
-    ## step 4: combination (overall summary)
+    ## step 3: combination (overall summary)
     plot.DF <- rbind(plot.sum, plot.hetero)
   }
 
   if (!overallSum) {
-    ## step 7: set up is.summary for formatting (normal DF)
+    ## step 6: set up is.summary for formatting (normal DF)
     if (any(metaClass %in% "groupedMetaDF")) {
       is.summary <- c(rep(FALSE, nrow(plot.main)),
                       rep(TRUE, nrow(summary)),
@@ -71,7 +70,7 @@ plotDF <- function(df, hetero, hgap, overallSum, metaClass)
                           ifelse(is.null(plot.hetero), 0, nrow(plot.hetero))))
     }
   } else {
-    ## step 5: set up is.summary for formatting (overall summary)
+    ## step 4: set up is.summary for formatting (overall summary)
     is.summary <- c(rep(TRUE, nrow(summary)),
                     rep(FALSE,
                         ifelse(is.null(plot.hetero), 0, nrow(plot.hetero))))

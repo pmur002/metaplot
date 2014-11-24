@@ -11,7 +11,7 @@ meta2DF.metabin <- function(meta, add = NULL, rowOrder = NULL,
   ## step 1: set up the main data frame
   ## summary meta data
   summMeta <- summary(meta)
-  # set up main data frame
+  ## set up main data frame
   DF <- forestDF(meta, study = meta$studlab, n.e = meta$n.e,
                  event.e = meta$event.e, n.c = meta$n.c, se = meta$seTE,
                  event.c = meta$event.c, effect = exp(meta$TE),
@@ -39,7 +39,7 @@ meta2DF.metabin <- function(meta, add = NULL, rowOrder = NULL,
                            summary = TRUE)
 
   ## random effect
-  summaryRandom <- forestDF(meta, study = "random effect",
+  summaryRandom <- forestDF(meta, study = "Random effect",
                             n.e = NA, event.e = NA,
                             n.c = NA, event.c = NA,
                             effect = exp(meta$TE.random),
@@ -87,7 +87,7 @@ meta2DF.metabin <- function(meta, add = NULL, rowOrder = NULL,
   ## step 5: Grouped Studies
   if (!is.null(meta$byvar)){
     Group <- list()
-    gp <- DF["group"]
+    gp <- meta$byvar
     for (i in 1:max(gp)){
       ## set up of the main DF for the group
       df <- DF[gp == i, ]
@@ -97,8 +97,9 @@ meta2DF.metabin <- function(meta, add = NULL, rowOrder = NULL,
                              n.e = sum(meta$n.e[gp == i]), event.e = NA,
                              n.c = sum(meta$n.c[gp == i]), event.c = NA,
                              effect = exp(summMeta$within.fixed$TE[i]),
-                             se = summMeta$within.fixed$seTE[i], w.fixed = 0,
-                             w.random = 0, mean = summMeta$within.fixed$TE[i],
+                             se = summMeta$within.fixed$seTE[i],
+                             w.fixed = 0, w.random = 0,
+                             mean = summMeta$within.fixed$TE[i],
                              lower = summMeta$within.fixed$lower[i],
                              upper = summMeta$within.fixed$upper[i],
                              e.lower = exp(summMeta$within.fixed$lower[i]),
@@ -224,7 +225,7 @@ meta2DF.metacont <- function(meta, add = NULL, rowOrder = NULL,
   ## step 5: grouped studies
   if (!is.null(meta$byvar)){
     Group <- list()
-    gp <- DF["group"]
+    gp <- meta$byvar
     for (i in 1:max(gp)){
       ## set up of the main DF for the group
       df <- DF[gp == i, ]

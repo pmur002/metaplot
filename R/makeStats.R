@@ -1,4 +1,4 @@
-### set up describtion format for hetero information
+### set up description format for hetero information
 makeStatsDesc <- function(labelNames, heading, newStatsFormat,
                           emptyHeading = FALSE) {
   if (!emptyHeading) {
