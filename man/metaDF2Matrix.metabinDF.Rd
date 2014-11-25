@@ -30,7 +30,7 @@ matrix used for plotting.
   \item{hgap}{A vector of row numbers to add horizontal spaces.}
   \item{vgap}{A vector of column numbers to add vertical spaces.}
   \item{stat}{A list of descriptions or strings for heterogeneity
-    statistics.  Can use the functions \code{\link{makeStatDesc}} and
+    statistics.  Can use the functions \code{\link{makeStatsDesc}} and
     \code{\link{makeLabelDesc}} to make descriptions that specify format
     and select relevant statistics.}
   \item{\dots}{Not used.}

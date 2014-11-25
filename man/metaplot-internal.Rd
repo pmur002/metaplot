@@ -26,13 +26,13 @@
 \alias{setUpRound}
 \alias{roundUpCols}
 \alias{plotDF}
-\alias{makeStatsDesc}
 \alias{makeStats}
 \alias{addStats}
 \alias{addLabel}
 \alias{heteroGen}
 \alias{setGroupLabel}
 \alias{dropRows}
+\alias{makeCol}
 
 \title{Internal metaplot Functions}
 \description{

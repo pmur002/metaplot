@@ -18,7 +18,7 @@ makeLabelDesc(format, heteroNames)
 }
 \arguments{
   \item{format}{Format string for new label.}
-  \item{heteroNames}{Names of existing heterogeneity measures.} 
+  \item{heteroNames}{Names of existing heterogeneity measures.}
 }
 \details{
   The names of heterogeneity measures are taken from the vector, "hetero",
@@ -30,18 +30,18 @@ An object of class \code{'labeldesc'} with a list of following components:
   \item{labelnames}{A character vector of names of labeled measures}
 }
 \seealso{
-\code{\link{makeStatDesc}}
+\code{\link{makeStatsDesc}}
 }
 \examples{
 library(meta)
 data(Olkin95)
-meta1 <- metabin(event.e, n.e, event.c, n.c, data = Olkin95, 
-                 subset = c(41,47,51,59), sm = "RR", method = "I")    
-Data <- meta2DF(meta1) 
+meta1 <- metabin(event.e, n.e, event.c, n.c, data = Olkin95,
+                 subset = c(41,47,51,59), sm = "RR", method = "I")
+Data <- meta2DF(meta1)
 het1 <- makeLabelDesc(c("I2.conf"), label = "Heterogeneity:")
 het2 <- makeLabelDesc(c("Q"), label = "                     ")
-matrix <- metaDF2Matrix(Data, stat = list(het1,het2))     
+matrix <- metaDF2Matrix(Data, stat = list(het1,het2))
 drawMeta(matrix,
-         plotPar = metaPar(stat = list(col="darkred", 
+         plotPar = metaPar(stat = list(col="darkred",
                                        fontface="bold.italic")))
 }

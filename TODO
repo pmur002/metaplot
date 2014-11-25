@@ -1,0 +1,29 @@
+Vignette needs more examples and modifications
+
+In parDefaults in metaPar.R, there are global assignments. Are these
+ok, or will they cause problems when trying to put the package on
+CRAN.
+
+Also, what does this code do?
+metaParDefaultsFuns <- parDefaults()
+metaParDefaults <- metaParDefaultsFuns$set
+## reset default settings
+resetDefaults <- metaParDefaultsFuns$reset
+
+
+Note that only print method for data frame is for metabinDF. Other
+methods are needed.
+In heteroGen.R, only metabinDF option treated. Also default format
+gives the same message for grouped as for overall. Grouped should
+perhaps be
+"Test for group effect: "
+instead of
+"Test for overall effect: "
+
+mainGen only deals with metabin and metacont cases. What about others?
+Likewise drawMeta only has methods for metabin and metacont.
+
+Is metabinStat still needed?
+
+
+

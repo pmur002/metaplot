@@ -18,6 +18,7 @@ export(drawMeta.metacontM)
 
 ## make descriptions and labels
 export(makeColDesc)
+export(makeCol)
 export(makeCIDesc)
 export(makeMSDDesc)
 export(mainGen)
@@ -41,7 +42,6 @@ export(print.metabinDF)
 export(print.metaPar)
 
 ## make hetero stats descriptions
-export(makeStatDesc)
 export(makeLabelDesc)
 
 ## convenience functions
