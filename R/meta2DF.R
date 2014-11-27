@@ -296,8 +296,9 @@ meta2DF.metacont <- function(meta, add = NULL, rowOrder = NULL,
 ###========================rmeta=============================###
 
 ### meta.MH
-meta2DF.meta.MH <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
-                            title = NULL, subtitle = NULL, ...) {
+meta2DF.meta.MH <- function(meta, add = NULL, rowOrder = NULL,
+                            title = NULL, subtitle = NULL,
+                            sub = NULL, ...) {
 
   summMeta <- summary(meta)
   ## step 1: set up main data frame
@@ -364,7 +365,7 @@ meta2DF.meta.MH <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
               p = meta$het[3], tau2 = NA,
               H = NA, H.lower = NA, H.upper = NA,
               I2 = NA, I2.lower = NA, I2.upper = NA,
-              Q.CMH = NA, conf.level = meta$conf.level)
+              Q.CMH = meta$MHtest[1], conf.level = meta$MHtest[2])
 
   ## step 6: set up the titles
   Title <- title
@@ -380,8 +381,9 @@ meta2DF.meta.MH <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
 }
 
 ## meta.DSL
-meta2DF.meta.DSL <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
-                             title = NULL, subtitle = NULL, ...) {
+meta2DF.meta.DSL <- function(meta, add = NULL, rowOrder = NULL,
+                             title = NULL, subtitle = NULL,
+                             sub = NULL, ...) {
 
   summMeta <- summary(meta)
   ## step 1: set up main data frame
@@ -446,10 +448,10 @@ meta2DF.meta.DSL <- function(meta, add = NULL, sub = NULL, rowOrder = NULL,
 
   ## step 5: heterogeneity information
   hetero <- c(Q = meta$het[1], df = meta$het[2],
-              p = meta$het[3], tau2 = NA,
+              p = meta$het[3], tau2 = meta$tau2,
               H = NA, H.lower = NA, H.upper = NA,
               I2 = NA, I2.lower = NA, I2.upper = NA,
-              Q.CMH = NA, conf.level = meta$conf.level)
+              Q.CMH = NA, conf.level = NULL)
 
   ## step 6: set up the titles
   Title <- title

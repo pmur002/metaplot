@@ -12,13 +12,22 @@
 meta2DF(meta, ...)
 }
 \arguments{
-  \item{meta}{Either an object of class \code{metabin}, or an object of class
-    \code{'metacont'}. See 'Details'.}
+  \item{meta}{An object of class \code{metabin}, \code{'metacont'},
+    \code{meta.MH}, \code{meta.DSL}, \code{rma.mh}, \code{rma.peto}, or
+    \code{rma.uni}. See 'Details'.}
   \item{\dots}{Other arguments.}
 }
 \details{
-Currently, object \code{meta} can come from functions \code{metabin()} or
-\code{metacont()} from the \pkg{meta} package.
+  Currently, object \code{meta} can come from functions \code{metabin()}
+  or \code{metacont()} from the \pkg{meta} package, \code{meta.DSL} or
+  \code{meta.MH} from the \pkg{rmeta} package, or \code{rma.mh},
+  \code{rma.peto}, or \code{rma.uni} from the \pkg{metafor} package.
+}
+\value{
+  An object of class \code{c('metabinDF', 'metaDF')} or
+  \code{c('metacontDF', 'metaDF')}. For details of these classes, see
+  \code{\link{meta2DF.metabin}} and \code{\link{meta2DF.metacont}}
+  respectively.
 }
 \seealso{
 \code{\link{meta2DF.metabin}},

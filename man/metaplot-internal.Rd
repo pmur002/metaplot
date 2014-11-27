@@ -2,8 +2,6 @@
 \alias{metaPlot.default}
 \alias{metaPlot.metaDF}
 \alias{metaPlot.metaM}
-\alias{meta2DF.meta.MH}
-\alias{meta2DF.meta.DSL}
 \alias{meta2DF.rma.mh}
 \alias{meta2DF.rma.peto}
 \alias{meta2DF.rma.uni}

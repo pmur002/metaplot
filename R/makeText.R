@@ -1,24 +1,24 @@
 ### makes a string vector of heterogeneity stats complete with labels
-metabinStat <- function(dfHetero) {
-  hetero <- as.list(dfHetero)
-  Q <- paste("Chi-square = ", round(hetero$Q, 2)," df = ",
-             hetero$df, " (p = ", round(hetero$p, 4),
-             ")", sep = "")
-  p <- paste("p = ", round(hetero$p, 4), sep = "")
-  tau2 <- paste("tau-squared = ", round(hetero$tau2, 4), sep = "")
-  H <- paste("H = ", round(hetero$H, 2), sep = "")
-  H.conf <- paste("H = ", round(hetero$H, 2), "[", round(hetero$H.lower, 2),
-                  ",", round(hetero$H.upper, 2), "]", sep = "")
-  I2 <- paste("I-squared = ", round(100*hetero$I2, 1), "%", sep = "")
-  I2.conf <- paste("I-squared = ", round(100*hetero$I2, 1), "% [",
-                   round(100*hetero$I2.lower, 1), "%, ",
-                   round(100*hetero$I2.upper, 1), "%]", sep = "")
-  Q.CMH <- paste("Test for overall effect:", "Q = ",
-                 round(hetero$Q.CMH, 2), sep = "")
-  texts <- c(Q = Q, p = p, tau2 = tau2, H = H, H.conf = H.conf,
-             I2 = I2, I2.conf  =  I2.conf, Q.CMH = Q.CMH)
-  texts
-}
+## metabinStat <- function(dfHetero) {
+##   hetero <- as.list(dfHetero)
+##   Q <- paste("Chi-square = ", round(hetero$Q, 2)," df = ",
+##              hetero$df, " (p = ", round(hetero$p, 4),
+##              ")", sep = "")
+##   p <- paste("p = ", round(hetero$p, 4), sep = "")
+##   tau2 <- paste("tau-squared = ", round(hetero$tau2, 4), sep = "")
+##   H <- paste("H = ", round(hetero$H, 2), sep = "")
+##   H.conf <- paste("H = ", round(hetero$H, 2), "[", round(hetero$H.lower, 2),
+##                   ",", round(hetero$H.upper, 2), "]", sep = "")
+##   I2 <- paste("I-squared = ", round(100*hetero$I2, 1), "%", sep = "")
+##   I2.conf <- paste("I-squared = ", round(100*hetero$I2, 1), "% [",
+##                    round(100*hetero$I2.lower, 1), "%, ",
+##                    round(100*hetero$I2.upper, 1), "%]", sep = "")
+##   Q.CMH <- paste("Test for overall effect:", "Q = ",
+##                  round(hetero$Q.CMH, 2), sep = "")
+##   texts <- c(Q = Q, p = p, tau2 = tau2, H = H, H.conf = H.conf,
+##              I2 = I2, I2.conf  =  I2.conf, Q.CMH = Q.CMH)
+##   texts
+## }
 
 makeRowText <- function(statdesc = NULL, hetero = NULL, text = NULL) {
   if(!is.null(statdesc)) {

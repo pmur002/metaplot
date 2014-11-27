@@ -1,4 +1,6 @@
-Vignette needs more examples and modifications
+Vignette needs more examples and modifications. Code from
+tests/testing_metaplot_package.r, examples in man pages and Edna's
+thesis can be used.
 
 In parDefaults in metaPar.R, there are global assignments. Are these
 ok, or will they cause problems when trying to put the package on
@@ -20,10 +22,16 @@ perhaps be
 instead of
 "Test for overall effect: "
 
-mainGen only deals with metabin and metacont cases. What about others?
-Likewise drawMeta only has methods for metabin and metacont.
+Is metabinStat still needed? It appears in
+tests/testing_metaplot_package.r, which will need modification also.
 
-Is metabinStat still needed?
+Need to sort out heterogeneity tests based coming from different packages.
+meta.DSL and meta.MH give Woolf's test for heterogeneity.
 
+Should meta.DSL and meta.MH be combined to provide full information
+for object of type metabinDF?
 
+In hetero for meta.MH and meta.DSL there are values for
+conf.level. Not clear what value should be there and how it should be
+treated.
 

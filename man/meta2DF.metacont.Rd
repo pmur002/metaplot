@@ -30,15 +30,16 @@ The data frame columns can be selected and ordered using
 \code{\link{metaDF2Matrix.metacontDF}}.
 }
 \value{
-An object of class \code{'metacontDF'} and \code{'metaDF'} with a list of
+An object of class \code{c('metacontDF','metaDF')} with a list of
 following components:
   \item{DF}{A data frame with studies as rows and study attributes as
     columns.}
   \item{summaryFixed}{A data frame with attributes of fixed effects
-    model.}
+    model. See \code{\link{forestDF}}.}
   \item{summaryRandom}{A data frame with attributes of the random
-    effects model.}
-  \item{hetero}{Heterogenity-Q statistic, degrees of freedom, p-value.}
+    effects model. See \code{\link{forestDF}}.}
+  \item{hetero}{Statistical results from the input \code{'metacont'}
+    object. See \code{\link[meta]{metacont}}.}
   \item{title}{Title of the meta-analysis.}
   \item{subtitle}{Subtitle of the meta-analysis.}
 }
